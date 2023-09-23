@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://root:root@cluster0.2harvru.mongodb.net/ayurcentral?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://root:root@cluster0.2harvru.mongodb.net/dev?retryWrites=true&w=majority",
     "jwtSecret": "jwt-secret",
     "organisation": "Ayurcentral",
     "email": "mkt.support@ayurcentral.com",
