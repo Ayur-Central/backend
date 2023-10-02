@@ -16,6 +16,7 @@ const checkClientId = require('../../middleware/checkClientId');
 // const getAppointmentModel = require('../../models/Appointment');
 const Appointment = require('../../models/Appointments');
 const checkObjectId = require('../../middleware/checkObjectId');
+const { createMeeting } = require('../../utils/helpers');
 
 // @route   GET api/appointment/test
 // @desc    Tests appointment route
@@ -70,14 +71,28 @@ router.post(
             // }
 
             // const Appointment = getAppointmentModel(req.headers.client_id);
+            
+
+            let meetingId = "";
+            if (appointmentBody.appointmentType === 'Online') {
+                try {
+                    meetingId = await createMeeting();
+                    console.log('Meeting Id : ', meetingId);
+                } catch (error) {
+                    console.log('Error generating meeting id : ', error);
+                }
+            }
+
             let appointment = new Appointment({
                 ...appointmentBody,
-                appointmentId: appointmentId
+                appointmentId: appointmentId,
+                meetingId: meetingId ?? ''
             });
 
             await appointment.save();
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
+            
 
             try {
                 let info = await EmailService.sendMail({
@@ -132,6 +147,11 @@ router.post(
                                             <td>Appointment Time</td>
                                             <td>${appointmentBody?.appointmentTime}</td>
                                         </tr>
+                                        ${appointmentBody.appointmentType === 'Online' &&
+                                        `<tr>
+                                            <td>Online Consultation Link </td>
+                                            <td>https://consultations.web.app/${meetingId}</td>
+                                        </tr>`}
                                     </table>
                                     <p style="white-space: pre-line;">
                                         Thank you,

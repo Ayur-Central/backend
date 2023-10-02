@@ -39,6 +39,12 @@ const AppointmentsSchema = new mongoose.Schema({
         required: true,
         default: 'pending'
     },
+    appointmentType: {
+        type: String,
+    },
+    meetingId: {
+        type: String
+    },
     prescription: {
         type: Object
     },
