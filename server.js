@@ -21,6 +21,10 @@ app.use('/api/schedules', require('./routes/api/schedules'));
 app.use('/api/appointments', require('./routes/api/appointments'));
 app.use('/api/contacts', require('./routes/api/contacts'));
 app.use('/api/newsletters', require('./routes/api/newsletters'));
+
+app.use('/api/clinics', require('./routes/api/clinics'));
+app.use('/api/doctors', require('./routes/api/doctors'));
+app.use('/api/patients', require('./routes/api/patients'));
 app.use('/api/rx', require('./routes/api/reports'));
 
 // Serve static assets in production

@@ -4,7 +4,7 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const normalize = require('normalize-url');
 
-const Schedule = require('../../models/Schedule');
+const Schedule = require('../../models/Schedules');
 const generateId = require('../../utils/uuidGenerator');
 
 const defaultSchedules = [

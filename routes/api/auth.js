@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
 
-const User = require('../../models/User');
+const User = require('../../models/Users');
+const Clinic = require('../../models/Clinics');
 
 // @route   GET api/auth/test
 // @desc    Tests auth route
@@ -20,6 +21,32 @@ router.get('/', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error : ' + err.message);
+  }
+});
+
+// @route    GET api/auth/user
+// @desc     Get user by token
+// @access   Private
+router.get('/user', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.entity.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error : ' + err.message);
+  }
+});
+
+// @route    GET api/auth/clinic
+// @desc     Get clinic by token
+// @access   Private
+router.get('/clinic', auth, async (req, res) => {
+  try {
+    const clinic = await Clinic.findById(req.entity.id).select('-password');
+    res.json(clinic);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error : ' + err.message);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ConatactSchema = new mongoose.Schema({
+const ContacstSchema = new mongoose.Schema({
     contactId: {
         type: String,
         required: true,
@@ -37,4 +37,14 @@ const ConatactSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('contact', ConatactSchema);
+// const getContactModel = (database) => {
+//     if (database) {
+//         const conn = mongoose.connection.useDb(database);
+//         return conn.model('contact', ContacstSchema);
+//     } else {
+//         return mongoose.model('contact', ContacstSchema);
+//     }
+// }
+// module.exports = getContactModel;
+
+module.exports = mongoose.model('contacts', ContacstSchema);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ScheduleSchema = new mongoose.Schema({
+const SchedulesSchema = new mongoose.Schema({
     scheduleId: {
         type: String,
         required: true
@@ -38,4 +38,4 @@ const ScheduleSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('schedules', ScheduleSchema);
+module.exports = mongoose.model('schedules', SchedulesSchema);

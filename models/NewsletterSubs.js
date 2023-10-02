@@ -12,4 +12,15 @@ const NewsletterSubsSchema = new mongoose.Schema({
     }
 });
 
+// const getNewsletterSubsModel = (database) => {
+//     if (database) {
+//         const conn = mongoose.connection.useDb(database);
+//         return conn.model('newsletterSubs', NewsletterSubsSchema);
+//     } else {
+//         return mongoose.model('newsletterSubs', NewsletterSubsSchema);
+//     }
+// }
+
+// module.exports = getNewsletterSubsModel;
+
 module.exports = mongoose.model('newsletterSubs', NewsletterSubsSchema);

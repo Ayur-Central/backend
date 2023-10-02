@@ -1,12 +1,27 @@
 const mongoose = require('mongoose');
 
-const DoctorsSchema = new mongoose.Schema({
-    doctorId: {
+const PatientsSchema = new mongoose.Schema({
+    patientId: {
         type: String,
         // required: true,
         // unique: true
     },
     name: {
+        type: String,
+        // required: true,
+        required: false,   // Change this to true in future
+    },
+    age: {
+        type: String,
+        // required: true,
+        required: false,   // Change this to true in future
+    },
+    gender: {
+        type: String,
+        // required: true,
+        required: false,   // Change this to true in future
+    },
+    address: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
@@ -29,6 +44,19 @@ const DoctorsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'clinics'
     },
+    doctor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'doctors'
+    },
+    lastVisitDate: {
+        type: String,
+    },
+    nextVisitDate: {
+        type: String,
+    },
+    medicalHistory: {
+        type: String,
+    },
     // licenseNo: {
     //     type: String,
     //     required: false
@@ -46,4 +74,4 @@ const DoctorsSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('doctors', DoctorsSchema);
+module.exports = mongoose.model('patients', PatientsSchema);

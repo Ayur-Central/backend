@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ReportSchema = new mongoose.Schema({
+const ReportsSchema = new mongoose.Schema({
     // reportId: {
     //     type: String,
     //     required: true
@@ -29,4 +29,4 @@ const ReportSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('report', ReportSchema);
+module.exports = mongoose.model('reports', ReportsSchema);

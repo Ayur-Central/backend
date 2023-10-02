@@ -3,8 +3,8 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
-const Report = require('../../models/Report');
-const User = require('../../models/User');
+const Report = require('../../models/Reports');
+const User = require('../../models/Users');
 const generateId = require('../../utils/uuidGenerator');
 
 // Your web app's Firebase configuration

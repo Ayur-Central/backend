@@ -4,8 +4,9 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const normalize = require('normalize-url');
 
-const NewsletterSubs = require('../../models/NewsletterSubs');
 const generateId = require('../../utils/uuidGenerator');
+const checkClientId = require('../../middleware/checkClientId');
+const getNewsletterSubsModel = require('../../models/NewsletterSubs');
 
 
 // @route   GET api/newsletters/subs/test
@@ -16,8 +17,9 @@ router.get('/subs/test', (req, res) => res.json({ msg: 'Newsletter Subs api work
 // @route    GET api/newsletters/subs/all
 // @desc     Get all newsletter subscriptions
 // @access   Public
-router.get('/subs/all', async (req, res) => {
+router.get('/subs/all', checkClientId, async (req, res) => {
     try {
+        const NewsletterSubs = getNewsletterSubsModel(req.headers.client_id);
         const ns = await NewsletterSubs.find();
 
         if (ns.length == 0) {
@@ -36,6 +38,7 @@ router.get('/subs/all', async (req, res) => {
 // @access   Public
 router.post(
     '/subs/create',
+    checkClientId,
     check('email', 'Please include a valid email').isEmail(),
     async (req, res) => {
 
@@ -48,6 +51,7 @@ router.post(
         const email = body.email;
 
         try {
+            const NewsletterSubs = getNewsletterSubsModel(req.headers.client_id);
             let ns = await NewsletterSubs.findOne({ email: email });
 
             if (ns) {
