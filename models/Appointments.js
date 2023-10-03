@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const AppointmentsSchema = new mongoose.Schema({
-    // appointmentId: {
-    //     type: String,
-    //     // required: true,
-    //     // unique: true
-    // },
+    appointmentId: {
+        type: String,
+        // required: true,
+        // unique: true
+    },
     name: {
         type: String,
         required: true,
