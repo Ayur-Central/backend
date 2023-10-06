@@ -26,6 +26,7 @@ app.use('/api/clinics', require('./routes/api/clinics'));
 app.use('/api/doctors', require('./routes/api/doctors'));
 app.use('/api/patients', require('./routes/api/patients'));
 app.use('/api/rx', require('./routes/api/reports'));
+app.use('/api/resources', require('./routes/api/resources'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

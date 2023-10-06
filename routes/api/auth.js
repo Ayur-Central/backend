@@ -199,4 +199,94 @@ router.post(
   }
 );
 
+// @route    POST api/auth/login
+// @desc     Authenticate user & get token
+// @access   Public
+router.post(
+  '/retoolLogin',
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password is required').exists(),
+  // check(
+  //   'phoneNo',
+  //   'Please enter a valid Phone Number'
+  // ).isLength({ min: 10 }),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { email } = req.body;
+
+    try {
+      let user = await User.findOne({ email })
+
+      // commenting this invalid credentials methods as this will be re-used for login api
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+      }
+
+      // If there is no user created, will create a new user
+      // if (!user) {
+        
+      //   user = new User({
+      //     ...req.body,
+      //     name: '', email: '', licenseNo: '', licenseLinked: false
+      //   });
+
+      //   await user.save();
+
+      //   const payload = {
+      //     user: {
+      //       id: user.id
+      //     }
+      //   };
+
+      //   jwt.sign(
+      //     payload,
+      //     config.get('jwtSecret'),
+      //     { expiresIn: '5 days' },
+      //     (err, token) => {
+      //       if (err) throw err;
+      //       res.json({ token, name: user.name, email: user.email, phoneNo: user.phoneNo, licenseNo: user.licenseNo, licenseLinked: user.licenseLinked });
+      //     }
+      //   );
+
+      //   return;
+      // }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+      }
+
+      // const payload = {
+      //   user: {
+      //     id: user.id
+      //   }
+      // };
+
+      // jwt.sign(
+      //   payload,
+      //   config.get('jwtSecret'),
+      //   { expiresIn: '5 days' },
+      //   (err, token) => {
+      //     if (err) throw err;
+      //     res.json({ token, name: user.name, email: user.email, phoneNo: user.phoneNo, licenseNo: user.licenseNo, licenseLinked: user.licenseLinked });
+      //   }
+      // );
+
+      res.json('Login Successful')
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error : ' + err.message);
+    }
+  }
+);
+
 module.exports = router;
