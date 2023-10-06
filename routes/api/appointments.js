@@ -208,6 +208,16 @@ router.post(
             // }
 
             // const Appointment = getAppointmentModel(req.headers.client_id);
+
+            let meetingId = "";
+            if (appointmentBody.appointmentType === 'Online') {
+                try {
+                    meetingId = await createMeeting();
+                    console.log('Meeting Id : ', meetingId);
+                } catch (error) {
+                    console.log('Error generating meeting id : ', error);
+                }
+            }
             
             let doctor = await Doctors.findOne({ _id: appointmentBody.doctor });
             // console.log({doctor})
@@ -225,6 +235,8 @@ router.post(
                 appointmentId: appointmentId,
                 appointmentDate: appointmentBody.appointmentDate,
                 appointmentTime: appointmentBody.appointmentDate,
+                appointmentType: appointmentBody.appointmentType,
+                meetingId: meetingId,
                 clinic: clinic.name,
                 patient: appointmentBody.patient,
                 doctor: doctor.name
@@ -288,6 +300,11 @@ router.post(
                                             <td>Appointment Time</td>
                                             <td>${moment(appointmentBody?.appointmentDate).format('hh:mm a')}</td>
                                         </tr>
+                                        ${appointmentBody.appointmentType === 'Online' &&
+                                        `<tr>
+                                            <td>Online Consultation Link </td>
+                                            <td>https://consultations.web.app/${meetingId}</td>
+                                        </tr>`}
                                     </table>
                                     <p style="white-space: pre-line;">
                                         Thank you,
