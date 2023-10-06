@@ -15,6 +15,9 @@ const organisation = config.get('organisation');
 const checkClientId = require('../../middleware/checkClientId');
 // const getAppointmentModel = require('../../models/Appointment');
 const Appointment = require('../../models/Appointments');
+const Doctors = require('../../models/Doctors');
+const Patients = require('../../models/Patients');
+const Clinics = require('../../models/Clinics');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
 
@@ -176,11 +179,271 @@ router.post(
     }
 );
 
+// @route    POST api/appointment/create
+// @desc     Create appointment
+// @access   Public
+router.post(
+    '/create/branchAdmin',
+    // checkClientId,
+    // check('name', 'Name is required').notEmpty(),
+    // check('phoneNo', 'Phone no. is required').notEmpty(),
+    // check('appointmentDate', 'appointmentDate is required').notEmpty(),
+    async (req, res) => {
+        console.log(1)
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const appointmentBody = req.body;
+        const appointmentId = generateId();
+
+        // TODO:// Future
+        // Check if there is duplicate appoints using phone and email
+        try {
+            // let appointment = await Appointment.findOne({ appointmentId: id });
+
+            // if (appointment) {
+            //     return res.status(400).json({ msg: 'Appointment with same Id already exists!' });
+            // }
+
+            // const Appointment = getAppointmentModel(req.headers.client_id);
+            
+            let doctor = await Doctors.findOne({ _id: appointmentBody.doctor });
+            // console.log({doctor})
+            let patient = await Patients.findOne({ _id: appointmentBody.patient });
+            // console.log({patient})
+            let clinic = await Clinics.findOne({ _id: appointmentBody.clinic });
+            // console.log({clinic})
+
+            let appointment = new Appointment({
+                ...appointmentBody,
+                name: patient.name,
+                email: patient.email,
+                phoneNo: patient.phoneNo,
+                gender: patient.gender,
+                appointmentId: appointmentId,
+                appointmentDate: appointmentBody.appointmentDate,
+                appointmentTime: appointmentBody.appointmentDate,
+                clinic: clinic.name,
+                patient: appointmentBody.patient,
+                doctor: doctor.name
+            });
+
+            await appointment.save();
+
+            // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
+            
+
+            try {
+                let info = await EmailService.sendMail({
+                    from: `"${organisation}" <${email}>`, // sender address
+                    to: `${ patient?.name }, ${ patient?.email}`, // list of receivers
+                    cc: `${email}`,
+                    bcc: `${ bccemail }`,
+                    subject: 'Appointment Request', // Subject line
+                    html: ` <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <style>
+                                        table {
+                                            font-family: arial, sans-serif;
+                                            border-collapse: collapse;
+                                        }
+                                        td, th {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <p style="white-space: pre-line;">
+                                        Dear ${patient?.name}, 
+
+                                        Greetings from ${organisation}!
+
+                                        We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
+                                        For further assistance, please call on 080-2234 2334
+                                    </p>
+                                    <br />
+                                    <table>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>${patient?.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Phone Number</td>
+                                            <td><a href='tel:${patient?.phoneNo}'>${patient?.phoneNo}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>${patient?.email ?? ''}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Appointment Date</td>
+                                            <td>${moment(appointmentBody?.appointmentDate).format('DD MMM YYYY, ddd')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Appointment Time</td>
+                                            <td>${moment(appointmentBody?.appointmentDate).format('hh:mm a')}</td>
+                                        </tr>
+                                    </table>
+                                    <p style="white-space: pre-line;">
+                                        Thank you,
+                                        ${organisation}
+                                    </p>
+                                </body>
+                            </html>
+                            `, // html body
+                });
+                
+                console.log("Appointment email sent... ", info.messageId);
+            } catch (error) {
+                console.log("Error sending appointment email : ", error.message);
+            }
+                
+            res.json({ msg: 'Appointment created successfully!', appointment: appointment });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error : ' + err.message);
+        }
+    }
+);
+
 // @route    POST api/appointment/updateStatus
 // @desc     Update appointment status
 // @access   Public
 router.post(
     '/updateStatus',
+    checkClientId,
+    check('id', 'appointment id is required').notEmpty(),
+    check('status', 'appointment status is required').notEmpty(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const appointmentBody = req.body;
+        const id = appointmentBody.id;
+        const status = appointmentBody.status;
+
+        // TODO:// Future
+        // Check if there is duplicate appoints using phone and email
+        try {
+            // const Appointment = getAppointmentModel(req.headers.client_id);
+            let appointment = await Appointment.findOne({ appointmentId: id });
+
+            if (!appointment) {
+                return res.status(400).json({ msg: 'appointment not found!' });
+            }
+            
+            appointment.appointmentStatus = status;
+            await appointment.updateOne({ appointmentStatus: status });
+            // res.json({ msg: 'Appointment Status Updated!', appointment: appointment });
+
+            if (status !== "approved") {
+                res.json({ msg: 'Appointment updated successfully!', appointment: appointment });
+                return;
+            }
+
+            try {
+                let info = await EmailService.sendMail({
+                    from: `"${organisation}" <${email}>`, // sender address
+                    to: `${ appointment?.name }, ${ appointment?.email }`, // list of receivers
+                    cc: `${email}`,
+                    bcc: `${ bccemail }`,
+                    subject: 'Appointment Request - Confirmed', // Subject line
+                    text: `There is a new appointment scheduled for ${appointment?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
+                    html: ` <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <style>
+                                        table {
+                                            font-family: arial, sans-serif;
+                                            border-collapse: collapse;
+                                        }
+                                        td, th {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <p style="white-space: pre-line;">
+                                        Dear ${appointment?.name }, 
+
+                                        We’re pleased to confirm your teleconsultation with Dr. Pampa Sreeshankar. Please find the details below. 
+
+                                        Date: ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}
+                                        Time: ${appointment?.appointmentTime}
+                                        Teleconsultation Link: http://bitly.ws/RF92
+
+                                        Please ensure you are in a quiet and comfortable environment for your teleconsultation. At the scheduled time, simply click on the provided link to join the session. 
+
+                                        Dr. Pampa Sreeshankar will be available to discuss your health concerns, provide guidance, and create a personalized plan to support your wellness goals.
+
+                                        If you have any questions or need assistance, please don't hesitate to reach out to us at 080-2234 2334. 
+                                    </p>
+                                    <br />
+                                    <table>
+                                        <tr>
+                                            <td>Name</td>
+                                            <td>${appointment?.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Phone Number</td>
+                                            <td><a href='tel:${appointment?.phoneNo}'>${appointment?.phoneNo}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>${appointment?.email ?? ''}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Appointment Date</td>
+                                            <td>${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Appointment Time</td>
+                                            <td>${appointment?.appointmentTime}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Appointment Status</td>
+                                            <td>${appointment?.appointmentStatus}</td>
+                                        </tr>
+                                    </table>
+                                    <p style="white-space: pre-line;">
+                                        Thank you,
+                                        Dr. Pampa Sreeshankar 
+                                        BAMS, MD (Ayurveda)
+                                    </p>
+                                </body>
+                            </html>
+                            `, // html body
+                });
+                
+                console.log("Appointment email sent... ", info.messageId);
+            } catch (error) {
+                console.log("Error sending appointment email : ", error.message);
+            }
+                
+            res.json({ msg: 'Appointment updated successfully!', appointment: appointment });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error : ' + err.message);
+        }
+    }
+);
+
+// @route    POST api/appointment/updateStatus
+// @desc     Update appointment status
+// @access   Public
+router.post(
+    '/sendReminder',
     checkClientId,
     check('id', 'appointment id is required').notEmpty(),
     check('status', 'appointment status is required').notEmpty(),

@@ -41,12 +41,14 @@ const PatientsSchema = new mongoose.Schema({
         required: false   // Change this to true if required
     },
     clinic: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'clinics'
+        type: mongoose.Schema.Types.String,
+        ref: 'clinics',
+        required: false
     },
     doctor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'doctors'
+        type: mongoose.Schema.Types.String,
+        ref: 'doctors',
+        required: false
     },
     lastVisitDate: {
         type: String,

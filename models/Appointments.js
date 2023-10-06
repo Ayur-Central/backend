@@ -8,7 +8,7 @@ const AppointmentsSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: true,
+        required: false,
     },
     email: {
         type: String,
@@ -17,7 +17,7 @@ const AppointmentsSchema = new mongoose.Schema({
     },
     phoneNo: {
         type: String,
-        required: true
+        required: false
     },
     phoneVerified: {
         type: String,
@@ -26,17 +26,20 @@ const AppointmentsSchema = new mongoose.Schema({
     notes: {
         type: String,
     },
+    gender: {
+        type: String,
+    },
     appointmentDate: {
         type: String,
-        required: true
+        required: false
     },
     appointmentTime: {
         type: String,
-        required: true
+        required: false
     },
     appointmentStatus: {
         type: String,
-        required: true,
+        required: false,
         default: 'pending'
     },
     appointmentType: {
@@ -49,17 +52,17 @@ const AppointmentsSchema = new mongoose.Schema({
         type: Object
     },
     clinic: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.String,
         ref: 'clinics',
         required: false
     },
     doctor: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.String,
         ref: 'doctors',
         required: false
     },
     patient: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.String,
         ref: 'patients',
         required: false
     },
