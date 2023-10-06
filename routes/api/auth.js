@@ -203,7 +203,7 @@ router.post(
 // @desc     Authenticate user & get token
 // @access   Public
 router.post(
-  '/retoolLogin',
+  '/branchLogin',
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists(),
   // check(
