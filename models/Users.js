@@ -20,7 +20,7 @@ const UsersSchema = new mongoose.Schema({
   },
   phoneNo: {
     type: String,
-    required: true
+    required: false
   },
   phoneVerified: {
     type: String,
