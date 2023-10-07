@@ -29,11 +29,11 @@ const AppointmentsSchema = new mongoose.Schema({
     gender: {
         type: String,
     },
-    appointmentDate: {
+    scheduledAppointmentDate: {
         type: String,
         required: false
     },
-    appointmentTime: {
+    scheduledAppointmentTime: {
         type: String,
         required: false
     },
@@ -48,7 +48,7 @@ const AppointmentsSchema = new mongoose.Schema({
     appointmentStatus: {
         type: String,
         required: false,
-        default: 'pending'
+        default: 'requested'
     },
     appointmentType: {
         type: String,
