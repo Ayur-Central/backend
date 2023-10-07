@@ -37,6 +37,14 @@ const AppointmentsSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    requestedAppointmentDate: {
+        type: String,
+        required: false
+    },
+    requestedAppointmentTime: {
+        type: String,
+        required: false
+    },
     appointmentStatus: {
         type: String,
         required: false,

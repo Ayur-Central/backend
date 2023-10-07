@@ -20,6 +20,7 @@ const Patients = require('../../models/Patients');
 const Clinics = require('../../models/Clinics');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
+const { sendSms } = require('../../utils/smsService');
 
 // @route   GET api/appointment/test
 // @desc    Tests appointment route
@@ -29,7 +30,7 @@ router.get('/test', (req, res) => res.json({ msg: 'Appointment api works' }));
 // @route   GET api/appointment/all
 // @desc    Get all appointments 
 // @access  Public
-router.get('/all', checkClientId, async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
         // const Appointment = getAppointmentModel(req.headers.client_id);
         const appointments = await Appointment.find()
@@ -126,7 +127,6 @@ router.post(
                                         Greetings from ${organisation}!
 
                                         We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
-                                        For further assistance, please call on 080-2234 2334
                                     </p>
                                     <br />
                                     <table>
@@ -143,12 +143,12 @@ router.post(
                                             <td>${appointmentBody?.email ?? ''}</td>
                                         </tr>
                                         <tr>
-                                            <td>Appointment Date</td>
-                                            <td>${moment(appointmentBody?.appointmentDate).format('DD MMM YYYY, ddd')}</td>
+                                            <td>Requested Appointment Date</td>
+                                            <td>${moment(appointmentBody?.requestedAppointmentDate).format('DD MMM YYYY, ddd')}</td>
                                         </tr>
                                         <tr>
-                                            <td>Appointment Time</td>
-                                            <td>${appointmentBody?.appointmentTime}</td>
+                                            <td>Requested Appointment Time</td>
+                                            <td>${appointmentBody?.requestedAppointmentTime}</td>
                                         </tr>
                                         ${appointmentBody.appointmentType === 'Online' &&
                                         `<tr>
@@ -166,6 +166,18 @@ router.post(
                 });
                 
                 console.log("Appointment email sent... ", info.messageId);
+                let pno = appointmentBody?.phoneNo?.replace('+91', "");
+                let body = `
+                    Hi ${appointmentBody?.name},
+
+                    Your appointment for ${moment('2023-10-06T23:54:20.334+0530').format('DD MMM YYYY')}, ${appointmentBody?.requestedAppointmentDate} has been requested.
+
+                    We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
+
+                    Regards,
+                    Team Ayurcentral
+                `
+                await sendSms(pno, body);
             } catch (error) {
                 console.log("Error sending appointment email : ", error.message);
             }
