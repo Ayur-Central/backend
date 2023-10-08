@@ -68,9 +68,6 @@ const AppointmentsSchema = new mongoose.Schema({
     appointmentChannel: {
         type: String
     },
-    prescription: {
-        type: Object
-    },
     clinic: {
         type: mongoose.Schema.Types.String,
         ref: 'clinics',

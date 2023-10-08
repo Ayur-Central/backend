@@ -203,7 +203,7 @@ router.post(
 // @access   Public
 router.post(
   '/branchAdmin/create',
-  check('clinicId', 'Name is required').notEmpty(),
+  check('clinicId', 'ClinicId is required').notEmpty(),
   // check('phoneNo', 'Name is required').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
   check(
@@ -216,7 +216,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { email, password, clinicId } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -224,18 +224,19 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'User with email already exists!' }] });
+          .json('User with email already exists!');
       }
 
       user = new User({
-        ...req.body
+        ...req.body,
+        clinic: clinicId
       });
 
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
-      res.json({ msg: 'User created successfully!' });
+      res.json('User created successfully!');
 
       // const payload = {
       //   user: {

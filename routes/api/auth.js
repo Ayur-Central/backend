@@ -204,6 +204,7 @@ router.post(
 // @access   Public
 router.post(
   '/branchLogin',
+  check('clinicId', 'ClinicId is required').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists(),
   // check(
@@ -216,7 +217,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { email, password, clinicId } = req.body;
 
     try {
       let user = await User.findOne({ email })
@@ -225,7 +226,7 @@ router.post(
       if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+          .json('Invalid Credentials');
       }
 
       // If there is no user created, will create a new user
@@ -258,11 +259,14 @@ router.post(
       // }
 
       const isMatch = await bcrypt.compare(password, user.password);
+      const isClinicMatch = clinicId === user.clinic;
 
-      if (!isMatch) {
+      console.log({isMatch, isClinicMatch})
+
+      if (!isMatch || !isClinicMatch) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'Invalid Credentials' }] });
+          .json('Invalid Credentials');
       }
 
       // const payload = {

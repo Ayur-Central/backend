@@ -36,6 +36,11 @@ const UsersSchema = new mongoose.Schema({
   emailVerified: {
     type: Boolean
   },
+  clinic: {
+    type: mongoose.Schema.Types.String,
+    ref: 'clinics',
+    required: false
+  },
   date: {
     type: Date,
     default: Date.now
