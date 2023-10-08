@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const config = require('config');
+const request = require("request");
 const smsApi = config.get('smsApi');
 const smsAccountSid = config.get('smsAccountSid');
 
@@ -16,7 +17,6 @@ const sendSms = async (phoneNo, body) => {
     const url = `${smsApi}/${smsAccountSid}`;
     const options = {
         method: "POST",
-        headers: { Authorization: videoSdkToken, "Content-Type": "application/json" },
         body: {
             to: '+91' + phoneNo,
             from: "+12567438590",

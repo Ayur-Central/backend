@@ -67,6 +67,9 @@ const PatientsSchema = new mongoose.Schema({
     //     type: String,
     //     required: false
     // },
+    prescriptions: {
+        type: Array
+    },
     photoURL: {
         type: String
     },

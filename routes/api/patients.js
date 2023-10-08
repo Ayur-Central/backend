@@ -107,25 +107,45 @@ router.get('/all', async (req, res) => {
         console.error(err.message);
         res.status(500).send('Server error : ' + err.message);
     }
-  });
+});
   
-  // @route   GET api/patients/all
-  // @desc    Get all patients 
-  // @access  Public
-  router.get('/:id', async (req, res) => {
+// @route   GET api/patients/all
+// @desc    Get all patients 
+// @access  Public
+router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const patients = await Patient.find({patientId: id})
-  
+
         if (patients.length == 0) {
             return res.status(200).json({ msg: 'No patients available', data: [] });
         }
-  
+
         res.json({data: patients});
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error : ' + err.message);
     }
-  });
+});
+
+// @route   GET api/appointment/filter
+// @desc    Get all appointments 
+// @access  Public
+router.post('/filter', async (req, res) => {
+    try {
+        // const Appointment = getAppointmentModel(req.headers.client_id);
+        const body = req.body instanceof String ? JSON.stringify(req.body) : req.body;
+        const patients = await Patient.find({...body})
+
+        if (patients.length == 0) {
+            return res.status(400).json([]);
+        }
+
+        res.json(patients);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error : ' + err.message);
+    }
+});
 
 module.exports = router;

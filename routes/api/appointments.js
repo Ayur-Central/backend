@@ -468,7 +468,7 @@ router.post(
     }
 );
 
-// @route    POST api/appointment/updateStatus
+// @route    POST api/appointment/sendReminder
 // @desc     Update appointment status
 // @access   Public
 router.post(
@@ -595,7 +595,7 @@ router.post(
     }
 );
 
-// @route    POST api/appointment/updateStatus
+// @route    POST api/appointment/sendRx
 // @desc     Update appointment status
 // @access   Public
 router.post(
@@ -922,6 +922,359 @@ router.post(
         }
     }
 );
+
+// @route    POST api/appointment/saveRx
+// @desc     Update appointment status
+// @access   Public
+router.post(
+    '/saveRx',
+    check('patient', 'patient is required').notEmpty(),
+    // check('appointment', 'appointment is required').notEmpty(),
+    check('prescription', 'prescription is required').notEmpty(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const body = req.body instanceof String ? JSON.stringify(req.body) : req.body;
+        // const id = body.appointment.appointmentId;
+        const patient = body.patient;
+        const prescription = body.prescription;
+
+        // TODO:// Future
+        // Check if there is duplicate appoints using phone and email
+        try {
+            // const Appointment = getAppointmentModel(req.headers.client_id);
+            // let appointment = await Appointment.findOne({ appointmentId: id });
+            let foundPatient = await Patients.findOne({ phoneNo: patient.phoneNo });
+
+            // if (!appointment) {
+            //     return res.status(400).json({ msg: 'appointment not found!' });
+            // }
+            
+            // await appointment.updateOne({ prescription: prescription });
+            let temp = foundPatient.prescriptions;
+            temp.push(prescription);
+            await foundPatient.updateOne({ prescriptions: temp });
+            // res.json({ msg: 'Appointment Status Updated!', appointment: appointment });
+
+            // if (status !== "approved") {
+            //     res.json({ msg: 'Appointment updated successfully!', appointment: appointment });
+            //     return;
+            // }
+
+            try {
+                let info = await EmailService.sendMail({
+                    from: `"${organisation}" <${email}>`, // sender address
+                    to: `${ foundPatient?.name }, ${ foundPatient?.email }`, // list of receivers
+                    cc: `${email}`,
+                    bcc: `${ bccemail }`,
+                    attachments: [{
+                        filename: `Appointment Prescription`,
+                        // path: `./../assets/Rx From Dr. Pampa Sreeshankar's Clinic.pdf`,
+                        path: prescription.url,
+                        contentType: prescription.type
+                    }],
+                    subject: 'Appointment - PFA - Prescription', // Subject line
+                    // text: `There is a new appointment scheduled for ${foundPatient?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
+                    html: ` <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <style>
+                                        table {
+                                            font-family: arial, sans-serif;
+                                            border-collapse: collapse;
+                                        }
+                                        td, th {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <p style="white-space: pre-line;">
+                                        Dear ${foundPatient?.name}, 
+
+                                        Here's your personalized Ayurvedic prescription from Dr. Pampa Sreeshankar. To make it convenient for you, you can order your prescribed medicines directly from our online store attached below.
+                                        
+                                        If you have any questions or need assistance, please don't hesitate to reach out to us at 080-2234 2334. 
+                                    </p>
+                                    <p style="white-space: pre-line;">
+                                        Thank you,
+                                        Dr. Pampa Sreeshankar 
+                                        BAMS, MD (Ayurveda)
+                                    </p>
+                                    <br /><br />
+                                    <div style="display: flex;">
+                                        <div style="
+                                            display: block;
+                                            flex-direction: column;
+                                            border: 1px solid gray;
+                                            padding: 1rem;
+                                            width: 10rem;
+                                            height: 31rem;"
+                                        >
+                                            <div style="height: 40%;
+                                                    aspect-ratio: 9/10;
+                                                    object-fit: contain;">
+                                                <img
+                                                    style="height: 80%;"
+                                                    src="https://ayurcentralonline.com/wp-content/uploads/2022/07/4958-350x350.png"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h2 style="font-size: small;">Abana Tablet (60Tabs) – Himalaya</h2>
+                                            <div style="display: flex;">
+                                                <p style="margin-right: 0.6rem;color: rgb(250,144,22);text-decoration:line-through;">₹175.00</p>
+                                                <p style="margin-right: 0.6rem;">₹155.00</p>
+                                            </div>
+                                            <p style="font-size: small;
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;  
+                                                overflow: hidden;
+                                                height: 8rem;"
+                                            >
+                                                    ABANA TABLET (60Tabs) by HIMALAYA is an ayurvedic antihyperlipidemic
+                                                    drug.
+                                            </p>
+                                            <a
+                                                style="display: flex;
+                                                justify-content: center;
+                                                text-decoration: none;
+                                                color: black;
+                                                border-radius: 5px;
+                                                padding: 0.5rem 3rem;
+                                                background-color: rgb(250,144,22, 0.7);"
+                                                href="https://ayurcentralonline.com/product/abana-tablet-himalaya/"
+                                            >
+                                                Order Now
+                                            </a>
+                                        </div>
+                                        <div style="display: block;
+                                            flex-direction: column;
+                                            border: 1px solid gray;
+                                            padding: 1rem;
+                                            width: 10rem;
+                                            flex-direction: column;
+                                            height: 31rem;"
+                                            >
+                                            <div style="height: 40%;
+                                                aspect-ratio: 9/10;
+                                                object-fit: contain;">
+                                                <img
+                                                    style="height: 80%;"
+                                                    src="https://ayurcentralonline.com/wp-content/uploads/2023/03/Akeek-Bhasma-5Gm-Baidyanath-350x350.jpg"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h2 style="font-size: small;">Akeek Bhasma (5Gm) – Baidyanath</h2>
+                                            <div style="display: flex;">
+                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹70.00</p>
+                                                <p style="margin-right: 0.6rem;">₹65.00</p>
+                                            </div>
+                                            <p style="font-size: small;
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;  
+                                                overflow: hidden;
+                                                height: 8rem;"
+                                            >
+                                                Baidyanath Akik Bhasma is an ayurvedic medicine that is primarily
+                                                used for the treatment of Heart Disease, Brain and Nervous System
+                                                disorders.
+                                            </p>
+                                            <a
+                                                style="display: flex;
+                                                justify-content: center;
+                                                text-decoration: none;
+                                                color: black;
+                                                border-radius: 5px;
+                                                padding: 0.5rem 3rem;
+                                                background-color: rgb(250,144,22, 0.7);"
+                                                href="https://ayurcentralonline.com/product/akeek-bhasma-5gm-baidyanath/"
+                                            >
+                                                Order Now
+                                            </a>
+                                        </div>
+                                        <div style="display: block;
+                                            flex-direction: column;
+                                            border: 1px solid gray;
+                                            padding: 1rem;
+                                            width: 10rem;
+                                            flex-direction: column;
+                                            height: 31rem;"
+                                        >
+                                            <div style="height: 40%;
+                                                aspect-ratio: 9/10;
+                                                object-fit: contain;"
+                                            >
+                                                <img
+                                                    style="height: 80%;"
+                                                    src="https://ayurcentralonline.com/wp-content/uploads/2022/07/7155-350x350.jpg"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h2 style="font-size: small;">Ancholean Tab (60Tabs) – Sri Sri Tattva</h2>
+                                            <div style="display: flex;">
+                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹250.00</p>
+                                                <p style="margin-right: 0.6rem;">₹240.00</p>
+                                            </div>
+                                            <p style="font-size: small;
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;  
+                                                overflow: hidden;
+                                                height: 8rem;"
+                                            >
+                                                ANCHOLEAN TAB by SRI SRI AYURVEDA is an ayurvedic proprietary
+                                                medicine.
+                                            </p>
+                                            <a
+                                                href="https://ayurcentralonline.com/product/ancholean-tab-60tabs-sri-sri-ayurveda/"
+                                                style="display: flex;
+                                                justify-content: center;
+                                                text-decoration: none;
+                                                color: black;
+                                                border-radius: 5px;
+                                                padding: 0.5rem 3rem;
+                                                background-color: rgb(250,144,22, 0.7);"
+                                            >
+                                                Order Now
+                                            </a>
+                                        </div>
+                                        <div style="display: block;
+                                            flex-direction: column;
+                                            border: 1px solid gray;
+                                            padding: 1rem;
+                                            width: 10rem;
+                                            flex-direction: column;
+                                            height: 31rem;">
+                                            <div style="height: 40%;
+                                                aspect-ratio: 9/10;
+                                                object-fit: contain;"
+                                            >
+                                                <img
+                                                    style="height: 80%;"
+                                                    src="https://drpampasreeshankar.myshopify.com/cdn/shop/files/1.jpg?v=1691775431&width=150"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h2 style="font-size: small;">Chyavanprash (Leyham) 500 Gm</h2>
+                                            <div style="display: flex;">
+                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹250.00</p>
+                                                <p style="margin-right: 0.6rem;">₹237.00</p>
+                                            </div>
+                                            <p style="font-size: small;
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;  
+                                                overflow: hidden;
+                                                height: 8rem;"
+                                            >
+                                                Can improve immunity. Helps boost strength. Can enhance longevity.
+                                                Authentic Ayurvedic recipe.
+                                            </p>
+                                            <a
+                                                href="https://drpampasreeshankar.myshopify.com/products/chyavanprash-leyham-500-gm"
+                                                style="display: flex;
+                                                justify-content: center;
+                                                text-decoration: none;
+                                                color: black;
+                                                border-radius: 5px;
+                                                padding: 0.5rem 3rem;
+                                                background-color: rgb(250,144,22, 0.7);"
+                                            >
+                                                Order Now
+                                            </a>
+                                        </div>
+                                        <div style="display: block;
+                                            flex-direction: column;
+                                            border: 1px solid gray;
+                                            padding: 1rem;
+                                            width: 10rem;
+                                            flex-direction: column;
+                                            height: 31rem;"
+                                        >
+                                            <div style="height: 40%;
+                                                aspect-ratio: 9/10;
+                                                object-fit: contain;"
+                                            >
+                                                <img
+                                                    style="height: 80%;"
+                                                    src="https://drpampasreeshankar.myshopify.com/cdn/shop/files/4.1.jpg?v=1691776924&width=360"
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <h2 style="font-size: small;">Dhanwantharam Gulika (Tablets) 50 Nos</h2>
+                                            <div style="display: flex;">
+                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹125.00</p>
+                                                <p style="margin-right: 0.6rem;">115.00</p>
+                                            </div>
+                                            <p style="font-size: small;
+                                                display: -webkit-box;
+                                                -webkit-line-clamp: 3;
+                                                -webkit-box-orient: vertical;  
+                                                overflow: hidden;
+                                                height: 8rem;"
+                                            >
+                                                Relieves bloating and gas. Eases heartburn and acid reflux. Can
+                                                reduce stomach pain because of gas and heaviness.
+                                            </p>
+                                            <a
+                                                href="https://drpampasreeshankar.myshopify.com/products/chyavanprash-leyham-500-gm"
+                                                style="display: flex;
+                                                justify-content: center;
+                                                text-decoration: none;
+                                                color: black;
+                                                border-radius: 5px;
+                                                padding: 0.5rem 3rem;
+                                                background-color: rgb(250,144,22, 0.7);"
+                                            >
+                                                Order Now
+                                            </a>
+                                        </div>
+                                    </div>
+                                </body>
+                            </html>
+                            `, // html body
+                });
+                
+                console.log("Appointment email sent... ", info.messageId);
+            } catch (error) {
+                console.log("Error sending appointment email : ", error.message);
+            }
+                
+            res.json({ msg: 'rx sent successfully!' });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error : ' + err.message);
+        }
+    }
+);
+
+// @route   GET api/appointment/filter
+// @desc    Get all appointments 
+// @access  Public
+router.post('/filter', async (req, res) => {
+    try {
+        // const Appointment = getAppointmentModel(req.headers.client_id);
+        const body = req.body instanceof String ? JSON.stringify(req.body) : req.body;
+        const appointments = await Appointment.find({...body})
+
+        if (appointments.length == 0) {
+            return res.status(400).json([]);
+        }
+
+        res.json(appointments);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error : ' + err.message);
+    }
+});
 
 router.get('/sendEmail', async (req, res) => {
     try {
