@@ -245,13 +245,13 @@ router.post(
                 phoneNo: patient.phoneNo,
                 gender: patient.gender,
                 appointmentId: appointmentId,
-                appointmentDate: appointmentBody.appointmentDate,
-                appointmentTime: appointmentBody.appointmentDate,
+                scheduledAppointmentDate: appointmentBody.scheduledAppointmentDate,
+                scheduledAppointmentTime: appointmentBody.scheduledAppointmentTime,
                 appointmentType: appointmentBody.appointmentType,
                 meetingId: meetingId,
                 clinic: clinic.name,
                 patient: appointmentBody.patient,
-                doctor: doctor.name
+                doctor: doctor.name,
             });
 
             await appointment.save();

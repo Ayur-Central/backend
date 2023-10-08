@@ -56,6 +56,15 @@ const AppointmentsSchema = new mongoose.Schema({
     meetingId: {
         type: String
     },
+    prescribedRxValue: {
+        type: String
+    },
+    purchasedRxValue: {
+        type: String
+    },
+    rxGrossMargin: {
+        type: String
+    },
     appointmentChannel: {
         type: String
     },
