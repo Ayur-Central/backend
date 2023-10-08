@@ -56,6 +56,9 @@ const AppointmentsSchema = new mongoose.Schema({
     meetingId: {
         type: String
     },
+    appointmentChannel: {
+        type: String
+    },
     prescription: {
         type: Object
     },
