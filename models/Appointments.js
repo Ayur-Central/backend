@@ -6,27 +6,27 @@ const AppointmentsSchema = new mongoose.Schema({
         // required: true,
         // unique: true
     },
-    name: {
+    patientName: {
         type: String,
         required: false,
     },
-    email: {
+    patientEmail: {
         type: String,
         required: false,
         // unique: true
     },
-    phoneNo: {
+    patientPhoneNo: {
         type: String,
         required: false
     },
-    phoneVerified: {
+    patientPhoneVerified: {
         type: String,
         required: false   // Change this to true if required
     },
     notes: {
         type: String,
     },
-    gender: {
+    patientGender: {
         type: String,
     },
     scheduledAppointmentDate: {
@@ -37,23 +37,15 @@ const AppointmentsSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    requestedAppointmentDate: {
-        type: String,
-        required: false
-    },
-    requestedAppointmentTime: {
-        type: String,
-        required: false
-    },
     appointmentStatus: {
         type: String,
         required: false,
-        default: 'requested'
+        default: 'scheduled'
     },
     appointmentType: {
         type: String,
     },
-    meetingId: {
+    videoConsultationId: {
         type: String
     },
     prescribedRxValue: {
@@ -67,9 +59,6 @@ const AppointmentsSchema = new mongoose.Schema({
     },
     appointmentChannel: {
         type: String
-    },
-    enquiryTag: {
-        type: Object
     },
     clinic: {
         type: mongoose.Schema.Types.String,
@@ -86,7 +75,7 @@ const AppointmentsSchema = new mongoose.Schema({
         ref: 'patients',
         required: false
     },
-    date: {
+    creationDate: {
         type: Date,
         default: Date.now
     }

@@ -90,7 +90,7 @@ router.post(
             let appointment = new Appointment({
                 ...appointmentBody,
                 appointmentId: appointmentId,
-                meetingId: meetingId ?? ''
+                videoConsultationId: meetingId ?? ''
             });
 
             await appointment.save();
@@ -239,19 +239,18 @@ router.post(
 
             let appointment = new Appointment({
                 ...appointmentBody,
-                name: patient.name,
-                email: patient.email,
-                phoneNo: patient.phoneNo,
-                gender: patient.gender,
+                patientName: patient.patientName,
+                patientEmail: patient.patientEmail,
+                patientPhoneNo: patient.patientPhoneNo,
+                patientGender: patient.patientGender,
                 appointmentId: appointmentId,
                 scheduledAppointmentDate: appointmentBody.scheduledAppointmentDate,
                 scheduledAppointmentTime: appointmentBody.scheduledAppointmentTime,
                 appointmentType: appointmentBody.appointmentType,
-                meetingId: meetingId,
+                videoConsultationId: meetingId,
                 clinic: clinic.name,
                 patient: appointmentBody.patient,
-                doctor: doctor.name,
-                enquiryTag: {}
+                doctor: doctor.name
             });
 
             await appointment.save();
@@ -262,7 +261,7 @@ router.post(
             try {
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
-                    to: `${ patient?.name }, ${ patient?.email}`, // list of receivers
+                    to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: 'Appointment Request', // Subject line
@@ -283,7 +282,7 @@ router.post(
                                 </head>
                                 <body>
                                     <p style="white-space: pre-line;">
-                                        Dear ${patient?.name}, 
+                                        Dear ${patient?.patientName}, 
 
                                         Greetings from ${organisation}!
 
@@ -294,23 +293,23 @@ router.post(
                                     <table>
                                         <tr>
                                             <td>Name</td>
-                                            <td>${patient?.name}</td>
+                                            <td>${patient?.patientName}</td>
                                         </tr>
                                         <tr>
                                             <td>Phone Number</td>
-                                            <td><a href='tel:${patient?.phoneNo}'>${patient?.phoneNo}</a></td>
+                                            <td><a href='tel:${patient?.patientPhoneNo}'>${patient?.patientPhoneNo}</a></td>
                                         </tr>
                                         <tr>
                                             <td>Email</td>
-                                            <td>${patient?.email ?? ''}</td>
+                                            <td>${patient?.patientEmail ?? ''}</td>
                                         </tr>
                                         <tr>
                                             <td>Appointment Date</td>
-                                            <td>${moment(appointmentBody?.appointmentDate).format('DD MMM YYYY, ddd')}</td>
+                                            <td>${moment(appointmentBody?.scheduledAppointmentDate).format('DD MMM YYYY, ddd')}</td>
                                         </tr>
                                         <tr>
                                             <td>Appointment Time</td>
-                                            <td>${moment(appointmentBody?.appointmentDate).format('hh:mm a')}</td>
+                                            <td>${moment(appointmentBody?.scheduledAppointmentTime).format('hh:mm a')}</td>
                                         </tr>
                                         ${appointmentBody.appointmentType === 'Online' &&
                                         `<tr>
@@ -954,9 +953,9 @@ router.post(
             // }
             
             // await appointment.updateOne({ prescription: prescription });
-            let temp = foundPatient.prescriptions;
+            let temp = foundPatient.patientPrescriptions;
             temp.push(prescription);
-            await foundPatient.updateOne({ prescriptions: temp });
+            await foundPatient.updateOne({ patientPrescriptions: temp });
             // res.json({ msg: 'Appointment Status Updated!', appointment: appointment });
 
             // if (status !== "approved") {
@@ -967,7 +966,7 @@ router.post(
             try {
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
-                    to: `${ foundPatient?.name }, ${ foundPatient?.email }`, // list of receivers
+                    to: `${ foundPatient?.patientName }, ${ foundPatient?.patientEmail }`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
                     attachments: [{
@@ -995,7 +994,7 @@ router.post(
                                 </head>
                                 <body>
                                     <p style="white-space: pre-line;">
-                                        Dear ${foundPatient?.name}, 
+                                        Dear ${foundPatient?.patientName}, 
 
                                         Here's your personalized Ayurvedic prescription from Dr. Pampa Sreeshankar. To make it convenient for you, you can order your prescribed medicines directly from our online store attached below.
                                         

@@ -40,12 +40,12 @@ const PatientsSchema = new mongoose.Schema({
         type: String,
         required: false   // Change this to true if required
     },
-    patientClinic: {
+    clinic: {
         type: mongoose.Schema.Types.String,
         ref: 'clinics',
         required: false
     },
-    patientDoctor: {
+    doctor: {
         type: mongoose.Schema.Types.String,
         ref: 'doctors',
         required: false
@@ -59,14 +59,6 @@ const PatientsSchema = new mongoose.Schema({
     patientMedicalHistory: {
         type: String,
     },
-    // licenseNo: {
-    //     type: String,
-    //     required: false
-    // },
-    // password: {
-    //     type: String,
-    //     required: false
-    // },
     patientPrescriptions: {
         type: Array
     },
