@@ -191,17 +191,16 @@ router.post(
     }
 );
 
-// @route    POST api/appointment/create
+// @route    POST api/appointment/create/branchAdmin
 // @desc     Create appointment
 // @access   Public
 router.post(
-    '/create/branchAdmin',
+    '/create/byPatientId',
     // checkClientId,
     // check('name', 'Name is required').notEmpty(),
     // check('phoneNo', 'Phone no. is required').notEmpty(),
     // check('appointmentDate', 'appointmentDate is required').notEmpty(),
     async (req, res) => {
-        console.log(1)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });

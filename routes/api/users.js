@@ -202,7 +202,7 @@ router.post(
 // @desc     Register user
 // @access   Public
 router.post(
-  '/branchAdmin/create',
+  '/create/clinicLogin',
   check('clinicId', 'ClinicId is required').notEmpty(),
   // check('phoneNo', 'Name is required').notEmpty(),
   check('email', 'Please include a valid email').isEmail(),
