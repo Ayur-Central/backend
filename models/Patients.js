@@ -6,33 +6,33 @@ const PatientsSchema = new mongoose.Schema({
         // required: true,
         // unique: true
     },
-    name: {
+    patientName: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    age: {
+    patientAge: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    gender: {
+    patientGender: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    address: {
+    patientAddress: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    email: {
+    patientEmail: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
         // unique: true
     },
-    phoneNo: {
+    patientPhoneNo: {
         type: String,
         required: true
     },
@@ -40,23 +40,23 @@ const PatientsSchema = new mongoose.Schema({
         type: String,
         required: false   // Change this to true if required
     },
-    clinic: {
+    patientClinic: {
         type: mongoose.Schema.Types.String,
         ref: 'clinics',
         required: false
     },
-    doctor: {
+    patientDoctor: {
         type: mongoose.Schema.Types.String,
         ref: 'doctors',
         required: false
     },
-    lastVisitDate: {
+    patientLastVisitDate: {
         type: String,
     },
-    nextVisitDate: {
+    patientNextVisitDate: {
         type: String,
     },
-    medicalHistory: {
+    patientMedicalHistory: {
         type: String,
     },
     // licenseNo: {
@@ -67,13 +67,13 @@ const PatientsSchema = new mongoose.Schema({
     //     type: String,
     //     required: false
     // },
-    prescriptions: {
+    patientPrescriptions: {
         type: Array
     },
-    photoURL: {
+    patientPhotoURL: {
         type: String
     },
-    date: {
+    creationDate: {
         type: Date,
         default: Date.now
     }

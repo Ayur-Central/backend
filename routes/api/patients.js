@@ -57,7 +57,7 @@ router.post(
         const { phoneNo, password } = req.body;
 
         try {
-            let patient = await Patient.findOne({ phoneNo });
+            let patient = await Patient.findOne({ patientPhoneNo : phoneNo });
 
             if (patient) {
                 return res.status(400).json({ msg: 'There is already a profile for this patient' });

@@ -947,7 +947,7 @@ router.post(
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
             // let appointment = await Appointment.findOne({ appointmentId: id });
-            let foundPatient = await Patients.findOne({ phoneNo: patient.phoneNo });
+            let foundPatient = await Patients.findOne({ patientPhoneNo: patient.phoneNo });
 
             // if (!appointment) {
             //     return res.status(400).json({ msg: 'appointment not found!' });
