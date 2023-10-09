@@ -7,30 +7,30 @@ const ClinicsSchema = new mongoose.Schema({
         // required: true,
         // unique: true
     },
-    name: {
+    clinicName: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    email: {
+    clinicEmail: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
         // unique: true
     },
-    phoneNo: {
+    clinicPhoneNo: {
         type: String,
         required: true
     },
-    phoneVerified: {
+    clinicPhoneVerified: {
         type: String,
         required: false   // Change this to true if required
     },
-    address: {
+    clinicAddress: {
         type: String,
         required: false
     },
-    type: {
+    clinicType: {
         type: String,
     },
     // licenseNo: {
@@ -78,7 +78,7 @@ const ClinicsSchema = new mongoose.Schema({
             }
         }
     ],
-    date: {
+    creationDate: {
         type: Date,
         default: Date.now
     }

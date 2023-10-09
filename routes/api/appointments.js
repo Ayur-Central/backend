@@ -248,9 +248,9 @@ router.post(
                 scheduledAppointmentTime: appointmentBody.scheduledAppointmentTime,
                 appointmentType: appointmentBody.appointmentType,
                 videoConsultationId: meetingId,
-                clinic: clinic.name,
+                clinic: clinic.clinicName,
                 patient: appointmentBody.patient,
-                doctor: doctor.name
+                doctor: doctor.docotorName
             });
 
             await appointment.save();
