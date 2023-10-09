@@ -251,6 +251,7 @@ router.post(
                 clinic: clinic.name,
                 patient: appointmentBody.patient,
                 doctor: doctor.name,
+                enquiryTag: {}
             });
 
             await appointment.save();
