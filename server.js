@@ -19,6 +19,7 @@ app.use('/api/auth', require('./routes/api/auth'));
 // app.use('/api/doctor', require('./routes/api/doctor'));
 app.use('/api/schedules', require('./routes/api/schedules'));
 app.use('/api/appointments', require('./routes/api/appointments'));
+app.use('/api/leads', require('./routes/api/leads'));
 app.use('/api/contacts', require('./routes/api/contacts'));
 app.use('/api/newsletters', require('./routes/api/newsletters'));
 
