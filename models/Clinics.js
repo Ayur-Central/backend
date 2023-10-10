@@ -33,6 +33,9 @@ const ClinicsSchema = new mongoose.Schema({
     clinicType: {
         type: String,
     },
+    clinicMapLink: {
+        type: String,
+    },
     // licenseNo: {
     //     type: String,
     //     required: false
