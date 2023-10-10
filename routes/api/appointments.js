@@ -231,7 +231,7 @@ router.post(
             }
             
             let doctor = await Doctors.findOne({ _id: appointmentBody.doctor });
-            // console.log({doctor})
+            // console.log(doctor.docotorName)
             let patient = await Patients.findOne({ _id: appointmentBody.patient });
             // console.log({patient})
             let clinic = await Clinics.findOne({ _id: appointmentBody.clinic });
@@ -251,7 +251,7 @@ router.post(
                 videoConsultationId: meetingId,
                 clinic: clinic.clinicName,
                 patient: appointmentBody.patient,
-                doctor: doctor.docotorName
+                doctor: doctor.doctorName
             });
 
             await appointment.save();
