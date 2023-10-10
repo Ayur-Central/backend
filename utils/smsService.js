@@ -14,7 +14,7 @@ const apiCall = (url, options) => {
 }
 
 const sendSms = async (phoneNo, body) => {
-    const url = `${smsApi}/${smsAccountSid}`;
+    const url = `${smsApi}/${smsAccountSid}/Messages.json`;
     const options = {
         method: "POST",
         body: {

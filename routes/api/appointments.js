@@ -104,7 +104,7 @@ router.post(
                     to: `${ appointmentBody?.name }, ${ appointmentBody?.email }`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
-                    subject: 'Appointment Request', // Subject line
+                    subject: 'Appointment Request Received - AyurCentral', // Subject line
                     html: ` <!DOCTYPE html>
                             <html>
                                 <head>
@@ -122,7 +122,7 @@ router.post(
                                 </head>
                                 <body>
                                     <p style="white-space: pre-line;">
-                                        Dear ${appointmentBody?.name }, 
+                                        Dear ${appointmentBody?.name}, 
 
                                         Greetings from ${organisation}!
 

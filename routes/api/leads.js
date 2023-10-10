@@ -74,10 +74,10 @@ router.post(
             try {
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
-                    to: `${ leadBody?.name }, ${ leadBody?.email }`, // list of receivers
+                    to: `${ leadBody?.leadName }, ${ leadBody?.leadEmail }`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
-                    subject: 'Appointment Request', // Subject line
+                    subject: 'Appointment Request Received - AyurCentral', // Subject line
                     html: ` <!DOCTYPE html>
                             <html>
                                 <head>
@@ -95,43 +95,20 @@ router.post(
                                 </head>
                                 <body>
                                     <p style="white-space: pre-line;">
-                                        Dear ${leadBody?.name }, 
+                                        Dear ${leadBody?.leadName}, 
 
-                                        Greetings from ${organisation}!
+                                        Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies.
 
-                                        We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
+                                        We're delighted to inform you that we've received your appointment request. Our dedicated team is already working on confirming your appointment, and you can expect to hear from us shortly.
+
+                                        While you await confirmation, why not explore our diverse range of authentic Ayurvedic products? Visit our e-commerce store at www.ayurcentralonline.com, where you'll find over 10,000+ products carefully curated for your well-being.
+
+                                        If you require any assistance, feel free to get in touch with us at +91 8037156655 
+
+                                        Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
                                     </p>
-                                    <br />
-                                    <table>
-                                        <tr>
-                                            <td>Name</td>
-                                            <td>${leadBody?.name}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Phone Number</td>
-                                            <td><a href='tel:${leadBody?.phoneNo}'>${leadBody?.phoneNo}</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Email</td>
-                                            <td>${leadBody?.email ?? ''}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Requested Appointment Date</td>
-                                            <td>${moment(leadBody?.requestedAppointmentDate).format('DD MMM YYYY, ddd')}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Requested Appointment Time</td>
-                                            <td>${leadBody?.requestedAppointmentTime}</td>
-                                        </tr>
-                                        ${leadBody.appointmentType === 'Online' &&
-                                        `<tr>
-                                            <td>Online Consultation Link </td>
-                                            <td>https://consultations.web.app/${meetingId}</td>
-                                        </tr>`}
-                                    </table>
                                     <p style="white-space: pre-line;">
-                                        Thank you,
-                                        ${organisation}
+                                        - Team AyurCentral
                                     </p>
                                 </body>
                             </html>
@@ -139,14 +116,12 @@ router.post(
                 });
                 
                 console.log("Lead email sent... ", info.messageId);
-                let pno = leadBody?.phoneNo?.replace('+91', "");
+                let pno = leadBody?.leadPhoneNo?.replace('+91', "");
                 let body = `
-                    Hi ${leadBody?.name},
+                    Hi ${leadBody?.leadName},
 
-                    Your appointment for ${moment('2023-10-06T23:54:20.334+0530').format('DD MMM YYYY')}, ${leadBody?.requestedAppointmentDate} has been requested.
-
-                    We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
-
+                    We received your lead request.
+                
                     Regards,
                     Team Ayurcentral
                 `
