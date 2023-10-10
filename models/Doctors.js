@@ -6,22 +6,22 @@ const DoctorsSchema = new mongoose.Schema({
         // required: true,
         // unique: true
     },
-    docotorName: {
+    doctorName: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
     },
-    docotorEmail: {
+    doctorEmail: {
         type: String,
         // required: true,
         required: false,   // Change this to true in future
         // unique: true
     },
-    docotorPhoneNo: {
+    doctorPhoneNo: {
         type: String,
         required: true
     },
-    docotorPhoneVerified: {
+    doctorPhoneVerified: {
         type: String,
         required: false   // Change this to true if required
     },
@@ -37,7 +37,7 @@ const DoctorsSchema = new mongoose.Schema({
     //     type: String,
     //     required: false
     // },
-    docotorPhotoURL: {
+    doctorPhotoURL: {
         type: String
     },
     creationDate: {
