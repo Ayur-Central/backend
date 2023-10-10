@@ -247,6 +247,7 @@ router.post(
                 scheduledAppointmentDate: appointmentBody.scheduledAppointmentDate,
                 scheduledAppointmentTime: appointmentBody.scheduledAppointmentTime,
                 appointmentType: appointmentBody.appointmentType,
+                appointmentChannel: appointmentBody.appointmentChannel,
                 videoConsultationId: meetingId,
                 clinic: clinic.clinicName,
                 patient: appointmentBody.patient,
