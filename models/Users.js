@@ -41,7 +41,7 @@ const UsersSchema = new mongoose.Schema({
     ref: 'clinics',
     required: false
   },
-  date: {
+  creationDate: {
     type: Date,
     default: Date.now
   }

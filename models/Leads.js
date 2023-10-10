@@ -35,7 +35,7 @@ const LeadsSchema = new mongoose.Schema({
     leadEnquiryTag: {
         type: Object
     },
-    date: {
+    creationDate: {
         type: Date,
         default: Date.now
     }
