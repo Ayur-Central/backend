@@ -30,7 +30,7 @@ const LeadsSchema = new mongoose.Schema({
     leadAppointmentStatus: {
         type: String,
         required: false,
-        default: 'requested'
+        default: 'Requested'
     },
     leadEnquiryTag: {
         type: Object

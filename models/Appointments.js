@@ -40,7 +40,7 @@ const AppointmentsSchema = new mongoose.Schema({
     appointmentStatus: {
         type: String,
         required: false,
-        default: 'scheduled'
+        default: 'Scheduled'
     },
     appointmentType: {
         type: String,
