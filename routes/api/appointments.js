@@ -922,7 +922,7 @@ router.post(
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
             let appointment = await Appointment.findOne({ patientPhoneNo: patient.phoneNo });
-            let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
+            // let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let foundPatient = await Patients.findOne({ patientPhoneNo: patient.phoneNo });
 
             // if (!appointment) {
