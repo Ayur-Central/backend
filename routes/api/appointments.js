@@ -922,6 +922,8 @@ router.post(
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
             let appointment = await Appointment.findOne({ patientPhoneNo: patient.phoneNo });
+            // TODO: Add doctor details
+            let doctor = ""
             // let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let foundPatient = await Patients.findOne({ patientPhoneNo: patient.phoneNo });
 
@@ -1035,7 +1037,7 @@ router.post(
             let appointment = await Appointment.findOne({ appointmentId: appointmentBody.appointmentId });
             let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let patient = await Patients.findOne({ patientPhoneNo: appointment.patientPhoneNo });
-            let clinic = await Clinics.findOne({ _id: appointmentBody.clinic });
+            let clinic = await Clinics.findOne({ clinicName: appointmentBody.clinic });
 
             if (!appointment) {
                 return res.status(400).json({ msg: 'appointment not found!' });
