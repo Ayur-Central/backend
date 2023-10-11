@@ -260,7 +260,7 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient);
+            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient, clinic);
 
             try {
                 let info = await EmailService.sendMail({
@@ -1034,12 +1034,13 @@ router.post(
             let appointment = await Appointment.findOne({ appointmentId: appointmentBody.appointmentId });
             let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let patient = await Patients.findOne({ patientPhoneNo: appointment.patientPhoneNo });
+            let clinic = await Clinics.findOne({ _id: appointmentBody.clinic });
 
             if (!appointment) {
                 return res.status(400).json({ msg: 'appointment not found!' });
             }
 
-            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient);
+            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient, clinic);
             
             try {
                 let info = await EmailService.sendMail({
@@ -1095,7 +1096,7 @@ router.post(
     }
 );
 
-function getEmailSubjectBody(appointmentBody, doctor ,patient) {
+function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     let op = {}
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
