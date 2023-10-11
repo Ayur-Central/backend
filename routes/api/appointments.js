@@ -258,6 +258,7 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
+            const { subject, body } = getEmailSubjectBody(appointment);
 
             try {
                 let info = await EmailService.sendMail({
@@ -265,7 +266,7 @@ router.post(
                     to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
-                    subject: 'Appointment Request Confirmed - AyurCentral', // Subject line
+                    subject: subject, // Subject line
                     html: ` <!DOCTYPE html>
                             <html>
                                 <head>
@@ -287,94 +288,7 @@ router.post(
 
                                         Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
                                         
-                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin' && `
-                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
-                                        
-                                            Below are the details and contact information for your reference:
-
-                                            Clinic Address: ${clinic?.clinicAddress ?? ""}
-                                            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
-                                            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
-                                            
-                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
-                                            
-                                            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
-                                        }
-                                        
-                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin' && `
-                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
-
-                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.` }
-                                        
-                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin' && `
-                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
-                                        
-                                            Below are the details and contact information for your reference:
-
-                                            Clinic Address: ${clinic?.clinicAddress ?? ""}
-                                            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
-                                            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
-                                            
-                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
-                                            
-                                            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
-                                        }
-
-                                        ${appointmentBody.appointmentType === 'Online' && `
-                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
-                                        
-                                            To confirm your online appointment, we request you to make the payment through the provided link.
-
-                                            Payment Link: https://rzp.io/i/QBrFF4nQr
-                                            
-                                            Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}
-                                            
-                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
-                                            
-                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
-                                        }
-
-                                        ${appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && `
-                                            We are thrilled to let you know that we have received your payment for the upcoming online consultation with AyurCentral. Your appointment is now confirmed, and we sincerely appreciate your trust in our services.
-
-                                            To join the virtual consultation at the scheduled time, click on the provided video consultation link. 
-
-                                            Video Consultation Link: https://consultations.web.app/${meetingId}
-
-                                            At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
-
-                                            If you encounter any technical difficulties, please contact our support team at [Support Number] for immediate assistance.
-
-                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
-                                        }
-
-                                        ${appointmentBody.appointmentType === 'In Person' && appointmentBody.appointmentStatus === 'Completed' && `
-                                            We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
-
-                                            Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
-                                            
-                                            Feedback Link: https://klr.bz/BAi9f/{kadvanced}
-                                            
-                                            If there's anything else you would like to share or if you have further questions, please feel free to reply to this email. We are here to assist you.
-                                            
-                                            Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
-                                        }
-
-                                        ${appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Completed' && `
-                                            We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
-
-                                            Your prescription from ${doctor?.doctorName ?? ""} is provided below for your convenience!
-                                            
-                                            Your prescribed medications are just a click away at our AyurCentral online store! Visit ${doctor?.doctorWebsite ?? ""} to place your order right away. Use code AYUR10 during checkout to enjoy a 10% discount and experience a seamless ordering process.
-                                            
-                                            Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
-                                            
-                                            Feedback Link: https://klr.bz/BAi9f/{kadvanced}
-                                            
-                                            If you require help with your order or have any queries about your prescription, please contact our support team at +91 8037156655 for immediate assistance.
-                                            
-                                            Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
-                                        }
+                                        ${body}
                                     </p>
                                     
                                     <p style="white-space: pre-line;">
@@ -1091,6 +1005,168 @@ router.post(
         }
     }
 );
+
+// @route    POST api/appointment/saveRx
+// @desc     Update appointment status
+// @access   Public
+router.post(
+    '/sendApptStatusEmail',
+    check('appointment', 'appointment is required').notEmpty(),
+    // check('appointment', 'appointment is required').notEmpty(),
+    // check('prescription', 'prescription is required').notEmpty(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const body = req.body instanceof String ? JSON.stringify(req.body) : req.body;
+        const appointmentBody = body.appointment;
+        // const patient = body.patient;
+        // const prescription = body.prescription;
+
+        // TODO:// Future
+        // Check if there is duplicate appoints using phone and email
+        try {
+            // const Appointment = getAppointmentModel(req.headers.client_id);
+            let appointment = await Appointment.findOne({ appointmentId: appointmentBody.appointmentId });
+            let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
+            let patient = await Patients.findOne({ patientPhoneNo: appointment.patientPhoneNo });
+
+            if (!appointment) {
+                return res.status(400).json({ msg: 'appointment not found!' });
+            }
+
+            const { subject, body } = getEmailSubjectBody(appointment);
+            
+            try {
+                let info = await EmailService.sendMail({
+                    from: `"${organisation}" <${email}>`, // sender address
+                    to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
+                    cc: `${email}`,
+                    bcc: `${ bccemail }`,
+                    subject: subject, // Subject line
+                    html: ` <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <style>
+                                        table {
+                                            font-family: arial, sans-serif;
+                                            border-collapse: collapse;
+                                        }
+                                        td, th {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <p style="white-space: pre-line;">
+                                        Dear ${patient?.patientName}, 
+
+                                        Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
+                                        
+                                        ${body}
+                                        
+                                    </p>
+                                    
+                                    <p style="white-space: pre-line;">
+                                        - Team AyurCentral
+                                    </p>
+                                </body>
+                            </html>
+                            `, // html body
+                });
+                
+                console.log("Appointment email sent... ", info.messageId);
+            } catch (error) {
+                console.log("Error sending appointment email : ", error.message);
+            }
+                
+            res.json({ msg: 'Email sent successfully!' });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error : ' + err.message);
+        }
+    }
+);
+
+function getEmailSubjectBody(appointmentBody) {
+    let op = {}
+    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Internal Ops') {
+        op.subject = 'Appointment Request Confirmed - AyurCentral';
+        op.subject = `
+            We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ appointmentBody?.scheduledAppointmentDate ?? "" } at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+                                            
+            Below are the details and contact information for your reference:
+
+            Clinic Address: ${clinic?.clinicAddress ?? ""}
+            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
+            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
+            
+            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+            
+            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
+    }
+        
+    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin') {
+        op.subject = 'Appointment Request Confirmed - AyurCentral';
+        op.subject = `
+        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+
+        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+    }
+
+    if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
+        op.subject = 'Appointment Request Confirmed - AyurCentral';
+        op.body = `We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+
+        To confirm your online appointment, we request you to make the payment through the provided link.
+    
+        Payment Link: https://rzp.io/i/QBrFF4nQr
+        
+        Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}
+        
+        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+        
+        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+    }
+
+    if (appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && appointmentBody.paymentStatus === 'Completed') {
+     
+        op.subject = 'Appointment Request Confirmed - AyurCentral';
+        op.body = `We are thrilled to let you know that we have received your payment for the upcoming online consultation with AyurCentral. Your appointment is now confirmed, and we sincerely appreciate your trust in our services.
+
+        To join the virtual consultation at the scheduled time, click on the provided video consultation link. 
+    
+        Video Consultation Link: https://consultations.web.app/${meetingId}
+    
+        At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
+    
+        If you encounter any technical difficulties, please contact our support team at [Support Number] for immediate assistance.
+    
+        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+    }
+        
+
+    if (appointmentBody.appointmentStatus === 'Completed') {
+        op.subject = 'Thank You for Choosing AyurCentral: Your Feedback Matters';
+        op.body = `We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
+
+        Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
+        
+        Feedback Link: https://klr.bz/BAi9f/{kadvanced}
+        
+        If there's anything else you would like to share or if you have further questions, please feel free to reply to this email. We are here to assist you.
+        
+        Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
+    }
+
+
+    return op;
+}
 
 // @route   GET api/appointment/filter
 // @desc    Get all appointments 
