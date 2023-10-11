@@ -286,18 +286,95 @@ router.post(
                                         Dear ${patient?.patientName}, 
 
                                         Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
-                                       
-                                        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
                                         
-                                        Below are the details and contact information for your reference:
+                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin' && `
+                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+                                        
+                                            Below are the details and contact information for your reference:
 
-                                        Clinic Address: ${clinic?.clinicAddress ?? ""}
-                                        Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
-                                        Google Maps Location: ${clinic?.clinicMapLink ?? ""}
+                                            Clinic Address: ${clinic?.clinicAddress ?? ""}
+                                            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
+                                            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
+                                            
+                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+                                            
+                                            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
+                                        }
+                                        
+                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin' && `
+                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
 
-                                        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? ""} to gain valuable insights into their practice.
+                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.` }
+                                        
+                                        ${appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin' && `
+                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+                                        
+                                            Below are the details and contact information for your reference:
 
-                                        Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
+                                            Clinic Address: ${clinic?.clinicAddress ?? ""}
+                                            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
+                                            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
+                                            
+                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+                                            
+                                            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
+                                        }
+
+                                        ${appointmentBody.appointmentType === 'Online' && `
+                                            We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+                                        
+                                            To confirm your online appointment, we request you to make the payment through the provided link.
+
+                                            Payment Link: https://rzp.io/i/QBrFF4nQr
+                                            
+                                            Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}
+                                            
+                                            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+                                            
+                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+                                        }
+
+                                        ${appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && `
+                                            We are thrilled to let you know that we have received your payment for the upcoming online consultation with AyurCentral. Your appointment is now confirmed, and we sincerely appreciate your trust in our services.
+
+                                            To join the virtual consultation at the scheduled time, click on the provided video consultation link. 
+
+                                            Video Consultation Link: https://consultations.web.app/${meetingId}
+
+                                            At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
+
+                                            If you encounter any technical difficulties, please contact our support team at [Support Number] for immediate assistance.
+
+                                            Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+                                        }
+
+                                        ${appointmentBody.appointmentType === 'In Person' && appointmentBody.appointmentStatus === 'Completed' && `
+                                            We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
+
+                                            Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
+                                            
+                                            Feedback Link: https://klr.bz/BAi9f/{kadvanced}
+                                            
+                                            If there's anything else you would like to share or if you have further questions, please feel free to reply to this email. We are here to assist you.
+                                            
+                                            Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
+                                        }
+
+                                        ${appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Completed' && `
+                                            We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
+
+                                            Your prescription from ${doctor?.doctorName ?? ""} is provided below for your convenience!
+                                            
+                                            Your prescribed medications are just a click away at our AyurCentral online store! Visit ${doctor?.doctorWebsite ?? ""} to place your order right away. Use code AYUR10 during checkout to enjoy a 10% discount and experience a seamless ordering process.
+                                            
+                                            Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
+                                            
+                                            Feedback Link: https://klr.bz/BAi9f/{kadvanced}
+                                            
+                                            If you require help with your order or have any queries about your prescription, please contact our support team at +91 8037156655 for immediate assistance.
+                                            
+                                            Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
+                                        }
                                     </p>
                                     
                                     <p style="white-space: pre-line;">
@@ -927,7 +1004,8 @@ router.post(
         // Check if there is duplicate appoints using phone and email
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
-            // let appointment = await Appointment.findOne({ appointmentId: id });
+            let appointment = await Appointment.findOne({ patientPhoneNo: patient.phoneNo });
+            let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let foundPatient = await Patients.findOne({ patientPhoneNo: patient.phoneNo });
 
             // if (!appointment) {
@@ -957,7 +1035,7 @@ router.post(
                         path: prescription.url,
                         contentType: prescription.type
                     }],
-                    subject: 'Appointment - PFA - Prescription', // Subject line
+                    subject: 'Your AyurCentral Online Consultation Prescription and Medication Ordering Details', // Subject line
                     // text: `There is a new appointment scheduled for ${foundPatient?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
                     html: ` <!DOCTYPE html>
                             <html>
@@ -978,246 +1056,23 @@ router.post(
                                     <p style="white-space: pre-line;">
                                         Dear ${foundPatient?.patientName}, 
 
-                                        Here's your personalized Ayurvedic prescription from Dr. Pampa Sreeshankar. To make it convenient for you, you can order your prescribed medicines directly from our online store attached below.
+                                        We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
+
+                                        Your prescription from ${doctor?.doctorName ?? ""} is provided below for your convenience!
                                         
-                                        If you have any questions or need assistance, please don't hesitate to reach out to us at 080-2234 2334. 
+                                        Your prescribed medications are just a click away at our AyurCentral online store! Visit ${doctor?.doctorWebsite ?? ""} to place your order right away. Use code AYUR10 during checkout to enjoy a 10% discount and experience a seamless ordering process.
+                                        
+                                        Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
+                                        
+                                        Feedback Link: https://klr.bz/BAi9f/{kadvanced}
+                                        
+                                        If you require help with your order or have any queries about your prescription, please contact our support team at +91 8037156655 for immediate assistance.
+                                        
+                                        Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.
                                     </p>
                                     <p style="white-space: pre-line;">
-                                        Thank you,
-                                        Dr. Pampa Sreeshankar 
-                                        BAMS, MD (Ayurveda)
+                                        - Team AyurCentral
                                     </p>
-                                    <br /><br />
-                                    <div style="display: flex;">
-                                        <div style="
-                                            display: block;
-                                            flex-direction: column;
-                                            border: 1px solid gray;
-                                            padding: 1rem;
-                                            width: 10rem;
-                                            height: 31rem;"
-                                        >
-                                            <div style="height: 40%;
-                                                    aspect-ratio: 9/10;
-                                                    object-fit: contain;">
-                                                <img
-                                                    style="height: 80%;"
-                                                    src="https://ayurcentralonline.com/wp-content/uploads/2022/07/4958-350x350.png"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <h2 style="font-size: small;">Abana Tablet (60Tabs) – Himalaya</h2>
-                                            <div style="display: flex;">
-                                                <p style="margin-right: 0.6rem;color: rgb(250,144,22);text-decoration:line-through;">₹175.00</p>
-                                                <p style="margin-right: 0.6rem;">₹155.00</p>
-                                            </div>
-                                            <p style="font-size: small;
-                                                display: -webkit-box;
-                                                -webkit-line-clamp: 3;
-                                                -webkit-box-orient: vertical;  
-                                                overflow: hidden;
-                                                height: 8rem;"
-                                            >
-                                                    ABANA TABLET (60Tabs) by HIMALAYA is an ayurvedic antihyperlipidemic
-                                                    drug.
-                                            </p>
-                                            <a
-                                                style="display: flex;
-                                                justify-content: center;
-                                                text-decoration: none;
-                                                color: black;
-                                                border-radius: 5px;
-                                                padding: 0.5rem 3rem;
-                                                background-color: rgb(250,144,22, 0.7);"
-                                                href="https://ayurcentralonline.com/product/abana-tablet-himalaya/"
-                                            >
-                                                Order Now
-                                            </a>
-                                        </div>
-                                        <div style="display: block;
-                                            flex-direction: column;
-                                            border: 1px solid gray;
-                                            padding: 1rem;
-                                            width: 10rem;
-                                            flex-direction: column;
-                                            height: 31rem;"
-                                            >
-                                            <div style="height: 40%;
-                                                aspect-ratio: 9/10;
-                                                object-fit: contain;">
-                                                <img
-                                                    style="height: 80%;"
-                                                    src="https://ayurcentralonline.com/wp-content/uploads/2023/03/Akeek-Bhasma-5Gm-Baidyanath-350x350.jpg"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <h2 style="font-size: small;">Akeek Bhasma (5Gm) – Baidyanath</h2>
-                                            <div style="display: flex;">
-                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹70.00</p>
-                                                <p style="margin-right: 0.6rem;">₹65.00</p>
-                                            </div>
-                                            <p style="font-size: small;
-                                                display: -webkit-box;
-                                                -webkit-line-clamp: 3;
-                                                -webkit-box-orient: vertical;  
-                                                overflow: hidden;
-                                                height: 8rem;"
-                                            >
-                                                Baidyanath Akik Bhasma is an ayurvedic medicine that is primarily
-                                                used for the treatment of Heart Disease, Brain and Nervous System
-                                                disorders.
-                                            </p>
-                                            <a
-                                                style="display: flex;
-                                                justify-content: center;
-                                                text-decoration: none;
-                                                color: black;
-                                                border-radius: 5px;
-                                                padding: 0.5rem 3rem;
-                                                background-color: rgb(250,144,22, 0.7);"
-                                                href="https://ayurcentralonline.com/product/akeek-bhasma-5gm-baidyanath/"
-                                            >
-                                                Order Now
-                                            </a>
-                                        </div>
-                                        <div style="display: block;
-                                            flex-direction: column;
-                                            border: 1px solid gray;
-                                            padding: 1rem;
-                                            width: 10rem;
-                                            flex-direction: column;
-                                            height: 31rem;"
-                                        >
-                                            <div style="height: 40%;
-                                                aspect-ratio: 9/10;
-                                                object-fit: contain;"
-                                            >
-                                                <img
-                                                    style="height: 80%;"
-                                                    src="https://ayurcentralonline.com/wp-content/uploads/2022/07/7155-350x350.jpg"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <h2 style="font-size: small;">Ancholean Tab (60Tabs) – Sri Sri Tattva</h2>
-                                            <div style="display: flex;">
-                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹250.00</p>
-                                                <p style="margin-right: 0.6rem;">₹240.00</p>
-                                            </div>
-                                            <p style="font-size: small;
-                                                display: -webkit-box;
-                                                -webkit-line-clamp: 3;
-                                                -webkit-box-orient: vertical;  
-                                                overflow: hidden;
-                                                height: 8rem;"
-                                            >
-                                                ANCHOLEAN TAB by SRI SRI AYURVEDA is an ayurvedic proprietary
-                                                medicine.
-                                            </p>
-                                            <a
-                                                href="https://ayurcentralonline.com/product/ancholean-tab-60tabs-sri-sri-ayurveda/"
-                                                style="display: flex;
-                                                justify-content: center;
-                                                text-decoration: none;
-                                                color: black;
-                                                border-radius: 5px;
-                                                padding: 0.5rem 3rem;
-                                                background-color: rgb(250,144,22, 0.7);"
-                                            >
-                                                Order Now
-                                            </a>
-                                        </div>
-                                        <div style="display: block;
-                                            flex-direction: column;
-                                            border: 1px solid gray;
-                                            padding: 1rem;
-                                            width: 10rem;
-                                            flex-direction: column;
-                                            height: 31rem;">
-                                            <div style="height: 40%;
-                                                aspect-ratio: 9/10;
-                                                object-fit: contain;"
-                                            >
-                                                <img
-                                                    style="height: 80%;"
-                                                    src="https://drpampasreeshankar.myshopify.com/cdn/shop/files/1.jpg?v=1691775431&width=150"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <h2 style="font-size: small;">Chyavanprash (Leyham) 500 Gm</h2>
-                                            <div style="display: flex;">
-                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹250.00</p>
-                                                <p style="margin-right: 0.6rem;">₹237.00</p>
-                                            </div>
-                                            <p style="font-size: small;
-                                                display: -webkit-box;
-                                                -webkit-line-clamp: 3;
-                                                -webkit-box-orient: vertical;  
-                                                overflow: hidden;
-                                                height: 8rem;"
-                                            >
-                                                Can improve immunity. Helps boost strength. Can enhance longevity.
-                                                Authentic Ayurvedic recipe.
-                                            </p>
-                                            <a
-                                                href="https://drpampasreeshankar.myshopify.com/products/chyavanprash-leyham-500-gm"
-                                                style="display: flex;
-                                                justify-content: center;
-                                                text-decoration: none;
-                                                color: black;
-                                                border-radius: 5px;
-                                                padding: 0.5rem 3rem;
-                                                background-color: rgb(250,144,22, 0.7);"
-                                            >
-                                                Order Now
-                                            </a>
-                                        </div>
-                                        <div style="display: block;
-                                            flex-direction: column;
-                                            border: 1px solid gray;
-                                            padding: 1rem;
-                                            width: 10rem;
-                                            flex-direction: column;
-                                            height: 31rem;"
-                                        >
-                                            <div style="height: 40%;
-                                                aspect-ratio: 9/10;
-                                                object-fit: contain;"
-                                            >
-                                                <img
-                                                    style="height: 80%;"
-                                                    src="https://drpampasreeshankar.myshopify.com/cdn/shop/files/4.1.jpg?v=1691776924&width=360"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <h2 style="font-size: small;">Dhanwantharam Gulika (Tablets) 50 Nos</h2>
-                                            <div style="display: flex;">
-                                                <p style="margin-right: 0.6rem; color: rgb(250,144,22);text-decoration: line-through;">₹125.00</p>
-                                                <p style="margin-right: 0.6rem;">115.00</p>
-                                            </div>
-                                            <p style="font-size: small;
-                                                display: -webkit-box;
-                                                -webkit-line-clamp: 3;
-                                                -webkit-box-orient: vertical;  
-                                                overflow: hidden;
-                                                height: 8rem;"
-                                            >
-                                                Relieves bloating and gas. Eases heartburn and acid reflux. Can
-                                                reduce stomach pain because of gas and heaviness.
-                                            </p>
-                                            <a
-                                                href="https://drpampasreeshankar.myshopify.com/products/chyavanprash-leyham-500-gm"
-                                                style="display: flex;
-                                                justify-content: center;
-                                                text-decoration: none;
-                                                color: black;
-                                                border-radius: 5px;
-                                                padding: 0.5rem 3rem;
-                                                background-color: rgb(250,144,22, 0.7);"
-                                            >
-                                                Order Now
-                                            </a>
-                                        </div>
-                                    </div>
                                 </body>
                             </html>
                             `, // html body

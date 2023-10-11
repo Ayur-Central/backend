@@ -60,6 +60,9 @@ const AppointmentsSchema = new mongoose.Schema({
     appointmentChannel: {
         type: String
     },
+    paymentStatus: {
+        type: String,
+    },
     clinic: {
         type: mongoose.Schema.Types.String,
         ref: 'clinics',
