@@ -1097,7 +1097,7 @@ router.post(
 
 function getEmailSubjectBody(appointmentBody, doctor ,patient) {
     let op = {}
-    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Internal Ops') {
+    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
         op.body = `
             We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ appointmentBody?.scheduledAppointmentDate ?? "" } at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
@@ -1113,7 +1113,7 @@ function getEmailSubjectBody(appointmentBody, doctor ,patient) {
             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
     }
         
-    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin') {
+    if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
         op.body = `
         We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
