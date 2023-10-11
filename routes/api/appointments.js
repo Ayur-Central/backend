@@ -220,7 +220,8 @@ router.post(
 
             // const Appointment = getAppointmentModel(req.headers.client_id);
 
-            let meetingId = "";
+            let meetingId = "-";
+            let paymentStatus = "-";
             if (appointmentBody.appointmentType === 'Online') {
                 try {
                     meetingId = await createMeeting();
@@ -249,6 +250,7 @@ router.post(
                 appointmentType: appointmentBody.appointmentType,
                 appointmentChannel: appointmentBody.appointmentChannel,
                 videoConsultationId: meetingId,
+                paymentStatus: paymentStatus,
                 clinic: clinic.clinicName,
                 patient: appointmentBody.patient,
                 doctor: doctor.doctorName
