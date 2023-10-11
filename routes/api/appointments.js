@@ -225,6 +225,7 @@ router.post(
             if (appointmentBody.appointmentType === 'Online') {
                 try {
                     meetingId = await createMeeting();
+                    getEmailSubjectBody = "Pending";
                     console.log('Meeting Id : ', meetingId);
                 } catch (error) {
                     console.log('Error generating meeting id : ', error);
