@@ -1099,7 +1099,7 @@ function getEmailSubjectBody(appointmentBody, doctor ,patient) {
     let op = {}
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
-        op.subject = `
+        op.body = `
             We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ appointmentBody?.scheduledAppointmentDate ?? "" } at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
                                             
             Below are the details and contact information for your reference:
@@ -1115,7 +1115,7 @@ function getEmailSubjectBody(appointmentBody, doctor ,patient) {
         
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Direct Walkin') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
-        op.subject = `
+        op.body = `
         We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
