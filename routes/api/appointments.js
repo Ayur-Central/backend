@@ -287,7 +287,7 @@ router.post(
 
                                         Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
                                        
-                                        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName} on ${appointmentBody?.scheduledAppointmentDate} at ${ appointmentBody?.scheduledAppointmentTime}.
+                                        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
                                         
                                         Below are the details and contact information for your reference:
 
@@ -295,7 +295,7 @@ router.post(
                                         Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
                                         Google Maps Location: ${clinic?.clinicMapLink ?? ""}
 
-                                        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at [Doctor's Website Address] to gain valuable insights into their practice.
+                                        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? ""} to gain valuable insights into their practice.
 
                                         Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
                                     </p>

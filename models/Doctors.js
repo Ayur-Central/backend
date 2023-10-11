@@ -25,6 +25,10 @@ const DoctorsSchema = new mongoose.Schema({
         type: String,
         required: false   // Change this to true if required
     },
+    doctorWebsite: {
+        type: String,
+        required: false   // Change this to true if required
+    },
     clinic: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'clinics'
