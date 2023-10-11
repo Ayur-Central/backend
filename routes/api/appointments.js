@@ -265,7 +265,7 @@ router.post(
                     to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
-                    subject: 'Appointment Request', // Subject line
+                    subject: 'Appointment Request Confirmed - AyurCentral', // Subject line
                     html: ` <!DOCTYPE html>
                             <html>
                                 <head>
@@ -285,42 +285,23 @@ router.post(
                                     <p style="white-space: pre-line;">
                                         Dear ${patient?.patientName}, 
 
-                                        Greetings from ${organisation}!
+                                        Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
+                                       
+                                        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName} on ${appointmentBody?.scheduledAppointmentDate} at ${ appointmentBody?.scheduledAppointmentTime}.
+                                        
+                                        Below are the details and contact information for your reference:
 
-                                        We're excited to receive your appointment request. Our expert team will swiftly confirm your appointment details and provide guidance.
-                                        For further assistance, please call on 080-2234 2334
+                                        Clinic Address: ${clinic?.clinicAddress ?? ""}
+                                        Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
+                                        Google Maps Location: ${clinic?.clinicMapLink ?? ""}
+
+                                        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at [Doctor's Website Address] to gain valuable insights into their practice.
+
+                                        Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
                                     </p>
-                                    <br />
-                                    <table>
-                                        <tr>
-                                            <td>Name</td>
-                                            <td>${patient?.patientName}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Phone Number</td>
-                                            <td><a href='tel:${patient?.patientPhoneNo}'>${patient?.patientPhoneNo}</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Email</td>
-                                            <td>${patient?.patientEmail ?? ''}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Appointment Date</td>
-                                            <td>${moment(appointmentBody?.scheduledAppointmentDate).format('DD MMM YYYY, ddd')}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Appointment Time</td>
-                                            <td>${moment(appointmentBody?.scheduledAppointmentTime).format('hh:mm a')}</td>
-                                        </tr>
-                                        ${appointmentBody.appointmentType === 'Online' &&
-                                        `<tr>
-                                            <td>Online Consultation Link </td>
-                                            <td>https://consultations.web.app/${meetingId}</td>
-                                        </tr>`}
-                                    </table>
+                                    
                                     <p style="white-space: pre-line;">
-                                        Thank you,
-                                        ${organisation}
+                                        - Team AyurCentral
                                     </p>
                                 </body>
                             </html>
