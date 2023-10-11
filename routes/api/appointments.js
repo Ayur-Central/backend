@@ -258,7 +258,7 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body } = getEmailSubjectBody(appointment);
+            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient);
 
             try {
                 let info = await EmailService.sendMail({
@@ -1037,7 +1037,7 @@ router.post(
                 return res.status(400).json({ msg: 'appointment not found!' });
             }
 
-            const { subject, body } = getEmailSubjectBody(appointment);
+            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient);
             
             try {
                 let info = await EmailService.sendMail({
@@ -1068,7 +1068,7 @@ router.post(
                                         Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
                                         
                                         ${body}
-                                        
+
                                     </p>
                                     
                                     <p style="white-space: pre-line;">
@@ -1093,7 +1093,7 @@ router.post(
     }
 );
 
-function getEmailSubjectBody(appointmentBody) {
+function getEmailSubjectBody(appointmentBody, doctor ,patient) {
     let op = {}
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel !== 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
