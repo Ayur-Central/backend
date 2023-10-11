@@ -1090,7 +1090,7 @@ router.post(
                 console.log("Error sending appointment email : ", error.message);
             }
                 
-            res.json({ msg: 'Email sent successfully!' });
+            res.json({ msg: 'Email sent successfully!', appointment: appointment });
 
         } catch (err) {
             console.error(err.message);
@@ -1147,7 +1147,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         To join the virtual consultation at the scheduled time, click on the provided video consultation link. 
     
-        Video Consultation Link: https://consultations.web.app/${meetingId}
+        Video Consultation Link: https://consultations.web.app/${appointmentBody?.videoConsultationId ?? "-"}
     
         At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
     
