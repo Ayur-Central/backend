@@ -949,12 +949,12 @@ router.post(
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
                     attachments: [{
-                        filename: `Appointment Prescription`,
+                        filename: `Prescription-${foundPatient?.patientName}`,
                         // path: `./../assets/Rx From Dr. Pampa Sreeshankar's Clinic.pdf`,
                         path: prescription.url,
                         contentType: prescription.type
                     }],
-                    subject: 'Your AyurCentral Online Consultation Prescription and Medication Ordering Details', // Subject line
+                    subject: 'Your AyurCentral Online Consultation Prescription and Medicines Ordering Details', // Subject line
                     // text: `There is a new appointment scheduled for ${foundPatient?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
                     html: ` <!DOCTYPE html>
                             <html>
