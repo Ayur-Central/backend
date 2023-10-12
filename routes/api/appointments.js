@@ -977,9 +977,9 @@ router.post(
 
                                         We wanted to express our heartfelt gratitude for choosing AyurCentral for your recent consultation. We value your trust and confidence in our services.
 
-                                        Your prescription from ${doctor?.doctorName ?? ""} is provided below for your convenience!
+                                        Your prescription from AyurCentral is provided below for your convenience!
                                         
-                                        Your prescribed medications are just a click away at our AyurCentral online store! Visit ${doctor?.doctorWebsite ?? ""} to place your order right away. Use code AYUR10 during checkout to enjoy a 10% discount and experience a seamless ordering process.
+                                        Your prescribed medications are just a click away at our AyurCentral online store! Visit https://ayurcentralonline.com/ to place your order right away. Use code AYUR10 during checkout to enjoy a 10% discount and experience a seamless ordering process.
                                         
                                         Your feedback is incredibly important to us as it helps us improve and provide even better care in the future. Please click on the below to complete our brief feedback survey.
                                         
