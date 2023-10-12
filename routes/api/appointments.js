@@ -921,11 +921,11 @@ router.post(
         // Check if there is duplicate appoints using phone and email
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
-            let appointment = await Appointment.findOne({ patientPhoneNo: patient.phoneNo });
+            let appointment = await Appointment.findOne({ patientPhoneNo: patient.patientPhoneNo });
             // TODO: Add doctor details
-            let doctor = ""
+            let doctor = {}
             // let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
-            let foundPatient = await Patients.findOne({ patientPhoneNo: patient.phoneNo });
+            let foundPatient = await Patients.findOne({ patientPhoneNo: patient.patientPhoneNo });
 
             // if (!appointment) {
             //     return res.status(400).json({ msg: 'appointment not found!' });
