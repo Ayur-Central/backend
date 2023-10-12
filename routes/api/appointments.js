@@ -1156,7 +1156,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     
         At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
     
-        If you encounter any technical difficulties, please contact our support team at [Support Number] for immediate assistance.
+        If you encounter any technical difficulties, please contact our support team at 080-37156655 for immediate assistance.
     
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
     }
