@@ -18,7 +18,7 @@ const sendSms = async (phoneNo, body) => {
     const options = {
         method: "POST",
         body: {
-            to: '+91' + phoneNo,
+            to: phoneNo,
             from: "+12567438590",
             body: body
         }
@@ -26,6 +26,7 @@ const sendSms = async (phoneNo, body) => {
   
     try {
         const response = await apiCall(url, options);
+        console.log(response)
     }
     // console.log(response)
     //   .then((response) => response.json())

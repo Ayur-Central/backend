@@ -1035,12 +1035,17 @@ router.post(
         try {
             // const Appointment = getAppointmentModel(req.headers.client_id);
             let appointment = await Appointment.findOne({ appointmentId: appointmentBody.appointmentId });
+            console.log()
             let doctor = await Doctors.findOne({ doctorName: appointment.doctor });
             let patient = await Patients.findOne({ patientPhoneNo: appointment.patientPhoneNo });
             let clinic = await Clinics.findOne({ clinicName: appointmentBody.clinic });
 
             if (!appointment) {
                 return res.status(400).json({ msg: 'appointment not found!' });
+            }
+
+            if (appointment.appointmentStatus === "Cancelled") {
+                return res.json({});
             }
 
             const { subject, body } = getEmailSubjectBody(appointment, doctor, patient, clinic);
@@ -1104,7 +1109,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
         op.body = `
-            We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ appointmentBody?.scheduledAppointmentDate ?? "" } at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+            We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
                                             
             Below are the details and contact information for your reference:
 
@@ -1120,20 +1125,20 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
         op.body = `
-        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+        We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
-        op.body = `We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}.
+        op.body = `We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
 
         To confirm your online appointment, we request you to make the payment through the provided link.
     
         Payment Link: https://rzp.io/i/QBrFF4nQr
         
-        Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${appointmentBody?.scheduledAppointmentDate ?? ""} at ${ appointmentBody?.scheduledAppointmentTime ?? ""}
+        Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}
         
         While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
         
@@ -1205,6 +1210,18 @@ router.get('/sendEmail', async (req, res) => {
         });
         
         res.json({ msg: 'Email Sent' })
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error : ' + err.message);
+    }
+})
+
+router.get('/sendSms', async (req, res) => {
+    try {
+        await sendSms("9036360233", "body");
+        
+        res.json({ msg: 'Sms Sent' })
 
     } catch (err) {
         console.error(err.message);
