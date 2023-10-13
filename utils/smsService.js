@@ -14,13 +14,20 @@ const apiCall = (url, options) => {
 }
 
 const sendSms = async (phoneNo, body) => {
-    const url = `${smsApi}/${smsAccountSid}/Messages.json`;
+    const url = `${ smsApi }/${ smsAccountSid }/messages`;
+    let cbo = {};
     const options = {
-        method: "POST",
+        method: "post",
+        headers: {
+            "api-key": "A37f128f0a5d8ed643218238d1ff43952",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         body: {
-            to: phoneNo,
-            from: "+12567438590",
-            body: body
+            "to": phoneNo,
+            "sender": "AYURCT",
+            "type": "MKT",
+            "body": "This is my first sms",
+            "source": "API"
         }
     };
   

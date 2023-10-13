@@ -916,6 +916,7 @@ router.post(
         // const id = body.appointment.appointmentId;
         const patient = body.patient;
         const prescription = body.prescription;
+        const patientNextVisitDate = body.nextVisitDate;
 
         // TODO:// Future
         // Check if there is duplicate appoints using phone and email
@@ -934,7 +935,7 @@ router.post(
             // await appointment.updateOne({ prescription: prescription });
             let temp = foundPatient.patientPrescriptions;
             temp.push(prescription);
-            await foundPatient.updateOne({ patientPrescriptions: temp });
+            await foundPatient.updateOne({ patientPrescriptions: temp, patientNextVisitDate: patientNextVisitDate });
             // res.json({ msg: 'Appointment Status Updated!', appointment: appointment });
 
             // if (status !== "approved") {
