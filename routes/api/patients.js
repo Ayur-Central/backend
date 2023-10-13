@@ -141,7 +141,7 @@ router.post('/filter', async (req, res) => {
             return res.status(400).json([]);
         }
 
-        res.json(patients);
+        res.json({data: patients});
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error : ' + err.message);

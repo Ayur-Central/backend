@@ -20,7 +20,7 @@ const Patients = require('../../models/Patients');
 const Clinics = require('../../models/Clinics');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
-const { sendSms } = require('../../utils/smsService');
+const { sendSms, sendWhatsAppMsg } = require('../../utils/smsService');
 
 // @route   GET api/appointment/test
 // @desc    Tests appointment route
@@ -303,6 +303,15 @@ router.post(
                 });
                 
                 console.log("Appointment email sent... ", info.messageId);
+
+                try {
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body);
+
+                    console.log("Appointment whatapp msg sent... ", resp);
+                } catch (e) {
+                    console.log("Error sending appointment whatsapp msg : ", e);
+                }
+                
             } catch (error) {
                 console.log("Error sending appointment email : ", error.message);
             }
@@ -1092,6 +1101,16 @@ router.post(
                 });
                 
                 console.log("Appointment email sent... ", info.messageId);
+
+                try {
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body);
+
+                    console.log("Appointment whatapp msg sent... ", resp);
+                } catch (e) {
+                    console.log("Error sending appointment whatsapp msg : ", e);
+                }
+
+                
             } catch (error) {
                 console.log("Error sending appointment email : ", error.message);
             }
