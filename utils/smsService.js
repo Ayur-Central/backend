@@ -20,7 +20,7 @@ const sendSms = async (phoneNo, body) => {
         method: "post",
         headers: {
             "api-key": "A37f128f0a5d8ed643218238d1ff43952",
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/json"
         },
         body: {
             "to": phoneNo,
