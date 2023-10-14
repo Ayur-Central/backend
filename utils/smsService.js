@@ -48,9 +48,10 @@ const sendSms = async (phoneNo, body) => {
         body: {
             to: `+91${phone}`,
             sender: "AYURCT",
-            // type: "MKT",
-            template_id: '1234567890100',
-            body: "This is my second sms",
+            type: "DEFAULT",
+            template_id: '123456789100',
+            // body: "This is my second sms",
+            params: "Shiva",
             source: "API"
         }
     };

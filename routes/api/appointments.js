@@ -1152,7 +1152,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
             
             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.ops_scheduled_offline;
-        op.params = `'${ patient?.patientName }','${ doctor?.doctorName }','${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }','${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }','${ clinic?.clinicPhoneNo }','${ clinic?.clinicMapLink }'`;
+        op.params = `${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') },${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },${ clinic?.clinicPhoneNo }','${ clinic?.clinicMapLink }`;
 
     }
         
@@ -1163,7 +1163,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_confirmed;
-        op.params = `'${patient?.patientName}','${doctor?.doctorName}'`;
+        op.params = `${patient?.patientName},${doctor?.doctorName}`;
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
@@ -1180,7 +1180,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_payment;
-        op.params = `'${ patient?.patientName },${ doctor?.doctorName }','${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }','${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }','https://rzp.io/i/QBrFF4nQr'`;
+        op.params = `${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://rzp.io/i/QBrFF4nQr'`;
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && appointmentBody.paymentStatus === 'Completed') {
@@ -1198,7 +1198,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
-        op.params = `'${ patient?.patientName }','${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }','${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')}','https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`;
+        op.params = `${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`;
     }
         
 
