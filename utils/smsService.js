@@ -89,7 +89,7 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
         body: body,
     };
 
-    if (selectedTemplate) {
+    if (templateName) {
         postBody = {
             from: "+918123402371",
             to: `+91${phone}`,
