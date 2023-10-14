@@ -99,7 +99,7 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
             template_name: templateName,
         }
         if (params) {
-            postBody.params = JSON.stringify(params);
+            postBody.params = params;
         }
         // if (mediaUrl) {
         //     postBody.media_url = mediaUrl;
