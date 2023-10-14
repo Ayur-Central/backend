@@ -78,8 +78,7 @@ const getWhatsAppTemplateName = (phoneNo) => {
 
 const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) => {
     const phone = removePhoneNoPrefix(phoneNo);
-    const selectedTemplate = whatsappTemplatesRepo[templateName];
-    console.log('Selected Template : ', selectedTemplate)
+    console.log('Selected Template : ', templateName)
     const url = `${ smsApi }/${ smsAccountSid }/messages`;
     
     let postBody = {
@@ -97,7 +96,7 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
             type: "template",
             channel: "whatsapp",
             // body: body,
-            template_name: selectedTemplate,
+            template_name: templateName,
         }
         if (params) {
             postBody.params = JSON.stringify(params);

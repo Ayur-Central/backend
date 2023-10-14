@@ -1010,11 +1010,8 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const params = {
-                        $1: foundPatient?.patientName,
-                        $2: 'Dr. Anjali',
-                        $3: prescription.url
-                    }
+                    
+                    const params = `'${ foundPatient?.patientName }','','${ prescription.url }'`;
                     const mediaUrl = prescription.url;
                     const resp = await sendWhatsAppMsg(foundPatient?.patientPhoneNo, "", whatsappTemplatesRepo.download_rx, params, mediaUrl);
 
