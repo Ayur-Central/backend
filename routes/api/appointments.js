@@ -305,11 +305,11 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params);
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, "", whatsAppTemplate, params);
 
-                    console.log("Appointment whatapp msg sent... ", resp);
+                    console.log("Appointment whatapp msg sent... ", resp.data);
                 } catch (e) {
-                    console.log("Error sending appointment whatsapp msg : ", e);
+                    console.log("Error sending appointment whatsapp msg : ", e.error);
                 }
                 
             } catch (error) {
@@ -1018,9 +1018,9 @@ router.post(
                     const mediaUrl = prescription.url;
                     const resp = await sendWhatsAppMsg(foundPatient?.patientPhoneNo, "", whatsappTemplatesRepo.download_rx, params, mediaUrl);
 
-                    console.log("Appointment whatapp msg sent... ", resp);
+                    console.log("Appointment whatapp msg sent... ", resp.data);
                 } catch (e) {
-                    console.log("Error sending appointment whatsapp msg : ", e);
+                    console.log("Error sending appointment whatsapp msg : ", e.error);
                 }
             } catch (error) {
                 console.log("Error sending appointment email : ", error.message);
@@ -1119,9 +1119,9 @@ router.post(
                 try {
                     const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params);
 
-                    console.log("Appointment whatapp msg sent... ", resp);
+                    console.log("Appointment whatapp msg sent... ", resp.dat);
                 } catch (e) {
-                    console.log("Error sending appointment whatsapp msg : ", e);
+                    console.log("Error sending appointment whatsapp msg : ", e.error);
                 }
 
                 
