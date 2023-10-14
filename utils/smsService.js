@@ -117,7 +117,7 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
   
     try {
         const response = await apiCall(url, options);
-        // console.log(response);
+        console.log(response);
         return response;
     }
     // console.log(response)
