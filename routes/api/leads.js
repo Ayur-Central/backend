@@ -15,7 +15,7 @@ const organisation = config.get('organisation');
 const Lead = require('../../models/Leads');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
-const { sendSms } = require('../../utils/smsService');
+const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
 
 // @route   GET api/leads/test
 // @desc    Tests leads route
@@ -126,6 +126,17 @@ router.post(
                     Team Ayurcentral
                 `
                 await sendSms(pno, body);
+
+                try {
+                    const params = leadBody?.leadName
+                    const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", whatsappTemplatesRepo.lead_enquiry_online, params);
+
+                    console.log("Appointment whatapp msg sent... ", resp);
+                } catch (e) {
+                    console.log("Error sending appointment whatsapp msg : ", e);
+                }
+                
+
             } catch (error) {
                 console.log("Error sending lead email : ", error.message);
             }

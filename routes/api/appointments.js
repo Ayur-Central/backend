@@ -20,7 +20,7 @@ const Patients = require('../../models/Patients');
 const Clinics = require('../../models/Clinics');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
-const { sendSms, sendWhatsAppMsg } = require('../../utils/smsService');
+const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
 
 // @route   GET api/appointment/test
 // @desc    Tests appointment route
@@ -261,7 +261,7 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params } = getEmailSubjectBody(appointment, doctor, patient, clinic);
 
             try {
                 let info = await EmailService.sendMail({
@@ -305,7 +305,7 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body);
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params);
 
                     console.log("Appointment whatapp msg sent... ", resp);
                 } catch (e) {
@@ -1008,6 +1008,20 @@ router.post(
                 });
                 
                 console.log("Appointment email sent... ", info.messageId);
+
+                try {
+                    const params = {
+                        $1: foundPatient?.patientName,
+                        $2: 'Dr. Anjali',
+                        $3: prescription.url
+                    }
+                    const mediaUrl = prescription.url;
+                    const resp = await sendWhatsAppMsg(foundPatient?.patientPhoneNo, "", whatsappTemplatesRepo.download_rx, params, mediaUrl);
+
+                    console.log("Appointment whatapp msg sent... ", resp);
+                } catch (e) {
+                    console.log("Error sending appointment whatsapp msg : ", e);
+                }
             } catch (error) {
                 console.log("Error sending appointment email : ", error.message);
             }
@@ -1058,7 +1072,7 @@ router.post(
                 return res.json({});
             }
 
-            const { subject, body } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params } = getEmailSubjectBody(appointment, doctor, patient, clinic);
             
             try {
                 let info = await EmailService.sendMail({
@@ -1103,7 +1117,7 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body);
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params);
 
                     console.log("Appointment whatapp msg sent... ", resp);
                 } catch (e) {
@@ -1129,17 +1143,20 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Internal Ops') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
         op.body = `
-            We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
+            We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? "" }.
                                             
             Below are the details and contact information for your reference:
 
-            Clinic Address: ${clinic?.clinicAddress ?? ""}
-            Clinic Phone Number: ${clinic?.clinicPhoneNo ?? ""}
-            Google Maps Location: ${clinic?.clinicMapLink ?? "" }
+            Clinic Address: ${ clinic?.clinicAddress ?? "" }
+            Clinic Phone Number: ${ clinic?.clinicPhoneNo ?? "" }
+            Google Maps Location: ${ clinic?.clinicMapLink ?? "" }
             
-            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+            While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${ doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
             
-            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`
+            Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`;
+        op.whatsAppTemplate = whatsappTemplatesRepo.ops_scheduled_offline;
+        op.params = patient?.patientName + ',' + doctor?.doctorName + ',' + moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') + ',' + moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')+','+clinic?.clinicPhoneNo+','+clinic?.clinicMapLink
+
     }
         
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin') {
@@ -1148,21 +1165,25 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+        op.whatsAppTemplate = whatsappTemplatesRepo.appointment_confirmed;
+        op.params = { $1: patient?.patientName, $doctorName: doctor?.doctorName};
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
         op.subject = 'Appointment Request Confirmed - AyurCentral';
-        op.body = `We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
+        op.body = `We are delighted to inform you that your appointment has been successfully confirmed with ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? "" }.
 
         To confirm your online appointment, we request you to make the payment through the provided link.
     
         Payment Link: https://rzp.io/i/QBrFF4nQr
         
-        Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}
+        Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? "" }
         
-        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
+        While anticipating your appointment, why not get to know your consulting doctor better? Visit their website at ${ doctor?.doctorWebsite ?? "" } to gain valuable insights into their practice.
         
-        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
+        op.whatsAppTemplate = whatsappTemplatesRepo.appointment_payment;
+        op.params = patient?.patientName + ',' + doctor?.doctorName + ',' + moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') + ',' + moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')+',https://rzp.io/i/QBrFF4nQr'
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && appointmentBody.paymentStatus === 'Completed') {
@@ -1172,13 +1193,15 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         To join the virtual consultation at the scheduled time, click on the provided video consultation link. 
     
-        Video Consultation Link: https://consultations.web.app/${appointmentBody?.videoConsultationId ?? "-"}
+        Video Consultation Link: https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }
     
         At the scheduled time, click on the provided video consultation link to join the virtual waiting room. Please be in a quiet, well-lit area with a stable internet connection during your appointment. Check your camera, microphone, and internet beforehand to avoid technical issues.
     
         If you encounter any technical difficulties, please contact our support team at 080-37156655 for immediate assistance.
     
-        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
+        Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
+        op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
+        op.params = patient?.patientName + ',' + moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') + ',' + moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')+','+`https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }`
     }
         
 
@@ -1192,7 +1215,9 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         
         If there's anything else you would like to share or if you have further questions, please feel free to reply to this email. We are here to assist you.
         
-        Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`
+        Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`;
+        op.whatsAppTemplate = whatsappTemplatesRepo.feedback;
+        op.params = patient?.patientName
     }
 
 
