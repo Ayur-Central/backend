@@ -78,7 +78,8 @@ const getWhatsAppTemplateName = (phoneNo) => {
 
 const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) => {
     const phone = removePhoneNoPrefix(phoneNo);
-    const selectedTemplate = getWhatsApptemplate(templateName)
+    const selectedTemplate = whatsappTemplatesRepo[templateName];
+    console.log('Selected Template : ', selectedTemplate)
     const url = `${ smsApi }/${ smsAccountSid }/messages`;
     
     let postBody = {
