@@ -60,6 +60,9 @@ const AppointmentsSchema = new mongoose.Schema({
     appointmentChannel: {
         type: String
     },
+    paymentLink: {
+        type: String
+    },
     paymentStatus: {
         type: String,
     },

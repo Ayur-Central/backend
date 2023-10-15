@@ -17,5 +17,6 @@
     "smsApi": "https://api.kaleyra.io/v1",
     "smsAccountSid": "HXIN1778987805IN",
     "videoSdkApi": "https://api.videosdk.live",
-    "videoSdkToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiJlZDY1ODg2Ni1hOWVkLTQxYmYtYmE5Yy0xMDhjMDA3NTVlOWIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY5Mjc5MDAxOSwiZXhwIjoxNzI0MzI2MDE5fQ.i_90GU7d_tnJeyeyHzhlcifm7CvJkz3yjFcLwR-UZsU"
+    "videoSdkToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlrZXkiOiJlZDY1ODg2Ni1hOWVkLTQxYmYtYmE5Yy0xMDhjMDA3NTVlOWIiLCJwZXJtaXNzaW9ucyI6WyJhbGxvd19qb2luIl0sImlhdCI6MTY5Mjc5MDAxOSwiZXhwIjoxNzI0MzI2MDE5fQ.i_90GU7d_tnJeyeyHzhlcifm7CvJkz3yjFcLwR-UZsU",
+    "paymentToken": "cnpwX3Rlc3RfTnhvUkFIY1Z1Z2RlU3Y6VVJrN2JEYzA3NnQzdkpNT1NXSjBPRldG"
 }

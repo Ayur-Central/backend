@@ -48,9 +48,9 @@ const sendSms = async (phoneNo, body) => {
         body: {
             to: `+91${phone}`,
             sender: "AYURCT",
-            type: "DEFAULT",
+            type: "MKT",
             template_id: '123456789100',
-            // body: "This is my second sms",
+            body: "This is my second sms",
             params: "Shiva",
             source: "API"
         }
@@ -77,7 +77,7 @@ const getWhatsAppTemplateName = (phoneNo) => {
     return phoneNo;
 }
 
-const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) => {
+const sendWhatsAppMsg = async (phoneNo, body, templateName, params, footerUrl) => {
     const phone = removePhoneNoPrefix(phoneNo);
     console.log('Selected Template : ', templateName);
     console.log('Template Params : ', params);
@@ -95,7 +95,7 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
         postBody = {
             from: "+918123402371",
             to: `+91${phone}`,
-            type: "template",
+            type: footerUrl ? "mediatemplate" : "template",
             channel: "whatsapp",
             // body: body,
             template_name: templateName,
@@ -103,9 +103,9 @@ const sendWhatsAppMsg = async (phoneNo, body, templateName, params, mediaUrl) =>
         if (params) {
             postBody.params = params;
         }
-        // if (mediaUrl) {
-        //     postBody.media_url = mediaUrl;
-        // }
+        if (footerUrl) {
+            postBody.param_url = footerUrl;
+        }
     }
 
     const options = {

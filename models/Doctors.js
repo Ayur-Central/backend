@@ -29,6 +29,10 @@ const DoctorsSchema = new mongoose.Schema({
         type: String,
         required: false   // Change this to true if required
     },
+    doctorConsultationFee: {
+        type: String,
+        default: "0"
+    },
     clinic: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'clinics'

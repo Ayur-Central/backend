@@ -21,6 +21,7 @@ const Clinics = require('../../models/Clinics');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
 const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
+const { generatePaymentLink } = require('../../utils/paymentService');
 
 // @route   GET api/appointment/test
 // @desc    Tests appointment route
@@ -220,17 +221,7 @@ router.post(
 
             // const Appointment = getAppointmentModel(req.headers.client_id);
 
-            let meetingId = "-";
-            let paymentStatus = "-";
-            if (appointmentBody.appointmentType === 'Online') {
-                try {
-                    meetingId = await createMeeting();
-                    paymentStatus = "Pending";
-                    console.log('Meeting Id : ', meetingId);
-                } catch (error) {
-                    console.log('Error generating meeting id : ', error);
-                }
-            }
+            
             
             let doctor = await Doctors.findOne({ _id: appointmentBody.doctor });
             // console.log(doctor.docotorName)
@@ -238,6 +229,29 @@ router.post(
             // console.log({patient})
             let clinic = await Clinics.findOne({ _id: appointmentBody.clinic });
             // console.log({clinic})
+
+            let meetingId = "-";
+            let paymentStatus = "-";
+            let paymentLink = "";
+            if (appointmentBody.appointmentType === 'Online') {
+                try {
+                    meetingId = await createMeeting();
+                    const payBody = {
+                        contact: patient.patientPhoneNo,
+                        email: patient.patientEmail,
+                        id: appointmentId,
+                        amount: doctor.doctorConsultationFee,
+                        phoneNo: patient.patientPhoneNo,
+                        description: `Online Consultation - ${doctor.doctorName} | AyurCentral`
+                    }
+                    paymentLink = await generatePaymentLink(payBody);
+                    paymentStatus = "Pending";
+                    console.log('Meeting Id : ', meetingId);
+                    console.log('Payment Link : ', paymentLink);
+                } catch (error) {
+                    console.log('Error generating meeting id : ', error);
+                }
+            }
 
             let appointment = new Appointment({
                 ...appointmentBody,
@@ -254,14 +268,15 @@ router.post(
                 paymentStatus: paymentStatus,
                 clinic: clinic.clinicName,
                 patient: appointmentBody.patient,
-                doctor: doctor.doctorName
+                doctor: doctor.doctorName,
+                paymentLink: paymentLink
             });
 
             await appointment.save();
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body, whatsAppTemplate, params } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
 
             try {
                 let info = await EmailService.sendMail({
@@ -305,7 +320,7 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, "", whatsAppTemplate, params);
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, "", whatsAppTemplate, params, link);
 
                     console.log("Appointment whatapp msg sent... ", resp.data);
                 } catch (e) {
@@ -1069,7 +1084,7 @@ router.post(
                 return res.json({});
             }
 
-            const { subject, body, whatsAppTemplate, params } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
             
             try {
                 let info = await EmailService.sendMail({
@@ -1114,7 +1129,7 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params);
+                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params, link);
 
                     console.log("Appointment whatapp msg sent... ", resp.dat);
                 } catch (e) {
@@ -1152,8 +1167,9 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
             
             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.ops_scheduled_offline;
-        op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') },${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },${ clinic?.clinicPhoneNo }','${ clinic?.clinicMapLink }"`;
-
+        // op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') },${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },${ clinic?.clinicPhoneNo }','${ clinic?.clinicMapLink }"`;
+        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\", \"${ clinic?.clinicPhoneNo }\", \"${ clinic?.clinicMapLink }\"`;
+        op.link = clinic?.clinicMapLink;
     }
         
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin') {
@@ -1163,7 +1179,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_confirmed;
-        op.params = `"${patient?.patientName},${doctor?.doctorName}"`;
+        op.params = `\"${patient?.patientName}\",\"${doctor?.doctorName}\"`;
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
@@ -1180,7 +1196,9 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_payment;
-        op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://rzp.io/i/QBrFF4nQr'"`;
+        // op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://rzp.io/i/QBrFF4nQr'"`;
+        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\"`;
+        op.link = appointmentBody?.paymentLink;
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && appointmentBody.paymentStatus === 'Completed') {
@@ -1198,7 +1216,9 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
     
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
-        op.params = `"${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'"`;
+        // op.params = `"${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'"`;
+        op.params = `\"${ patient?.patientName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\"`;
+        op.link = `'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`
     }
         
 
@@ -1214,7 +1234,8 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         
         Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.feedback;
-        op.params = patient?.patientName
+        op.params = patient?.patientName;
+        op.link = 'https://klr.bz/BAi9f/{kadvanced}'
     }
 
 
@@ -1273,10 +1294,34 @@ router.get('/sendSms', async (req, res) => {
 
 router.get('/sendWhatsAppMessage', async (req, res) => {
     try {
-        const params = `',${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') },${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`;
-        await sendWhatsAppMsg("9036360233", "body", whatsappTemplatesRepo.send_vc_after_payment, params);
+        const v1 = "v1";
+        const v2 = "v2";
+        const v3 = "v3";
+        const v4 = "v4";
+        const v5 = "https://rzp.io/l/bjakfkdkh";
+        const params = `\"${v1}\",\"${v2}\",\"${v3}\",\"${v4}\",\"${v5}"`;
+        await sendWhatsAppMsg("9036360233", "body", whatsappTemplatesRepo.appointment_payment, params, 'https://rzp.io/l/bjakfkdkh');
         
         res.json({ msg: 'Sms Sent' })
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error : ' + err.message);
+    }
+})
+
+router.get('/generatePaymentLink', async (req, res) => {
+    try {
+        const payBody = {
+            contact: "9036360233",
+            email: "l.shivkumarreddy@gmail.com",
+            amount: 30000,
+            phoneNo: "9036360233",
+            description: `Online Consultation - ${'Shiva'} | AyurCentral`
+        }
+        const paymentLink = await generatePaymentLink(payBody);
+        
+        res.json({ msg: 'payment link generated', paymentLink: paymentLink})
 
     } catch (err) {
         console.error(err.message);
