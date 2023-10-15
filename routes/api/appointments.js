@@ -1174,8 +1174,8 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.ops_scheduled_offline;
         // op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') },${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },${ clinic?.clinicPhoneNo }','${ clinic?.clinicMapLink }"`;
-        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\", \"${ clinic?.clinicPhoneNo }\", \"${ clinic?.clinicMapLink }\"`;
-        op.link = clinic?.clinicMapLink;
+        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"${ clinic?.clinicPhoneNo }\",\"${ clinic?.clinicMapLink }\"`;
+        op.link = clinic?.clinicMapLink.replace('https://maps.app.goo.gl/', '');
     }
         
     if (appointmentBody.appointmentType === 'In-Person' && appointmentBody.appointmentChannel === 'Direct Walkin') {
