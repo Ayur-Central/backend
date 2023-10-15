@@ -1184,7 +1184,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         We are delighted to inform you that your appointment has been successfully confirmed with ${doctor?.doctorName ?? ""} on ${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? ""} at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? ""}.
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
-        op.whatsAppTemplate = whatsappTemplatesRepo.appointment_confirmed;
+        op.whatsAppTemplate = whatsappTemplatesRepo.direct_walkin;
         op.params = `\"${patient?.patientName}\",\"${doctor?.doctorName}\"`;
     }
 
