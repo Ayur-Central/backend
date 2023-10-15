@@ -35,10 +35,10 @@ const paymentObj = {
 const getAmount = (amount) => {
     if (amount instanceof String) {
         const amt = parseInt(amount);
-        return Math.ceil(amt ?? 0 * 100 + 0.0);
+        return Math.ceil(amt * 100 + 0.0);
         // return Math.ceil(amt ?? 0 * 100);
     } else {
-        return Math.ceil(amount ?? 0 * 100 + 0.0);
+        return Math.ceil(amount * 100 + 0.0);
         // return Math.ceil(amount ?? 0 * 100);
     }
 }

@@ -35,7 +35,7 @@ const getTemplateByLeadUrl = (lead) => {
         if (websiteDoctors[url] === 'Online') {
             return { template: whatsappTemplatesRepo.lead_enquiry_online, params: lead?.leadName };
         } else {
-            return { template: whatsappTemplatesRepo.lead_enquiry_offline, params: `\"${lead?.leadName}\", \"${websiteDoctors[url]}\"` };
+            return { template: whatsappTemplatesRepo.lead_enquiry_offline, params: `\"${lead?.leadName}\",\"${websiteDoctors[url]}\"` };
         }
     }
 }

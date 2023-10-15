@@ -1223,7 +1223,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
         // op.params = `"${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'"`;
         op.params = `\"${ patient?.patientName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }\"`;
-        op.link = `'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`
+        op.link = `'${appointmentBody?.videoConsultationId}'`
     }
         
 
