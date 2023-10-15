@@ -17,7 +17,7 @@ router.get('/subs/test', (req, res) => res.json({ msg: 'Newsletter Subs api work
 // @route    GET api/newsletters/subs/all
 // @desc     Get all newsletter subscriptions
 // @access   Public
-router.get('/subs/all', checkClientId, async (req, res) => {
+router.get('/subs/all', async (req, res) => {
     try {
         const NewsletterSubs = getNewsletterSubsModel(req.headers.client_id);
         const ns = await NewsletterSubs.find();
@@ -38,7 +38,6 @@ router.get('/subs/all', checkClientId, async (req, res) => {
 // @access   Public
 router.post(
     '/subs/create',
-    checkClientId,
     check('email', 'Please include a valid email').isEmail(),
     async (req, res) => {
 

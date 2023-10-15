@@ -233,6 +233,7 @@ router.post(
             let meetingId = "-";
             let paymentStatus = "-";
             let paymentLink = "";
+
             if (appointmentBody.appointmentType === 'Online') {
                 try {
                     meetingId = await createMeeting();
@@ -253,7 +254,7 @@ router.post(
                 }
             }
 
-            let appointment = new Appointment({
+            let appObj = {
                 ...appointmentBody,
                 patientName: patient.patientName,
                 patientEmail: patient.patientEmail,
@@ -270,13 +271,17 @@ router.post(
                 patient: appointmentBody.patient,
                 doctor: doctor.doctorName,
                 paymentLink: paymentLink
+            }
+
+            let appointment = new Appointment({
+                ...appObj
             });
 
             await appointment.save();
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appObj, doctor, patient, clinic);
 
             try {
                 let info = await EmailService.sendMail({
@@ -1026,8 +1031,8 @@ router.post(
 
                 try {
                     
-                    const params = `'${ foundPatient?.patientName }','','${ prescription.url }'`;
-                    const mediaUrl = prescription.url;
+                    const params = `\"${ foundPatient?.patientName }\",\"${ prescription.url }\"`;
+                    const mediaUrl = prescription.url.replace('https://firebasestorage.googleapis.com/v0/b/digiclinik-live.appspot.com/o/', '');
                     const resp = await sendWhatsAppMsg(foundPatient?.patientPhoneNo, "", whatsappTemplatesRepo.download_rx, params, mediaUrl);
 
                     console.log("Appointment whatapp msg sent... ", resp.data);
@@ -1084,12 +1089,12 @@ router.post(
                 return res.json({});
             }
 
-            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
+            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, appointment, clinic);
             
             try {
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
-                    to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
+                    to: `${ appointment?.patientName }, ${ appointment?.patientEmail}`, // list of receivers
                     cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: subject, // Subject line
@@ -1110,7 +1115,7 @@ router.post(
                                 </head>
                                 <body>
                                     <p style="white-space: pre-line;">
-                                        Dear ${patient?.patientName}, 
+                                        Dear ${appointment?.patientName}, 
 
                                         Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies. 
                                         
@@ -1129,7 +1134,7 @@ router.post(
                 console.log("Appointment email sent... ", info.messageId);
 
                 try {
-                    const resp = await sendWhatsAppMsg(patient?.patientPhoneNo, body, whatsAppTemplate, params, link);
+                    const resp = await sendWhatsAppMsg(appointment?.patientPhoneNo, body, whatsAppTemplate, params, link);
 
                     console.log("Appointment whatapp msg sent... ", resp.dat);
                 } catch (e) {
@@ -1198,7 +1203,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_payment;
         // op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://rzp.io/i/QBrFF4nQr'"`;
         op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"${appointmentBody?.paymentLink}\"`;
-        op.link = appointmentBody?.paymentLink;
+        op.link = appointmentBody?.paymentLink.replace('https://rzp.io/i/', '');
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.paymentStatus === 'Completed' && appointmentBody.paymentStatus === 'Completed') {

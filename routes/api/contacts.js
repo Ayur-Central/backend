@@ -21,7 +21,7 @@ router.get('/test', (req, res) => res.json({ msg: 'Contact api works' }));
 // @route    GET api/contact/all
 // @desc     Get all Contacts
 // @access   Public
-router.get('/all', checkClientId, async (req, res) => {
+router.get('/all', async (req, res) => {
     try {
         const Contact = getContactModel(req.headers.client_id);
         // const contact = await Contact.find();
@@ -43,7 +43,6 @@ router.get('/all', checkClientId, async (req, res) => {
 // @access   Public
 router.post(
     '/create',
-    checkClientId,
     check('name', 'Name is required').notEmpty(),
     check('phoneNo', 'Phone No. is required').notEmpty(),
     // check('email', 'Please include a valid email').isEmail(),

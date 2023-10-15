@@ -17,6 +17,29 @@ const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
 const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
 
+const websiteDoctors = {
+    'https://ayurcentral-online.web.app/' : 'Online',
+    'https://dranjalimishra.ayurcentralonline.com/': 'Dr. Anjali Mishra',
+    'https://dranjalisen.ayurcentralonline.com/': 'Dr. Anjali Sen',
+    'https://drprashanth.ayurcentralonline.com/': 'Dr. Prashanth',
+    'https://drhibaismail.ayurcentralonline.com/': 'Dr. Hiba Ismail',
+    'https://drnaganikitha.ayurcentralonline.com/': 'Dr. Naga Nikitha',
+    'https://drmanojkumarsamantray.ayurcentralonline.com/': 'Dr. Manoj Kumar S',
+    'https://drshilpapattar.ayurcentralonline.com/': 'Dr. Shilpa Pattar',
+}
+
+const getTemplateByLeadUrl = (lead) => {
+    if (lead.leadEnquiryTag && lead.leadEnquiryTag.url) {
+        let url = Object.keys(websiteDoctors).find(e => e.includes(lead.leadEnquiryTag.url.replaceAll('/index.html', '')));
+        console.log(url, websiteDoctors[url])
+        if (websiteDoctors[url] === 'Online') {
+            return { template: whatsappTemplatesRepo.lead_enquiry_online, params: lead?.leadName };
+        } else {
+            return { template: whatsappTemplatesRepo.lead_enquiry_offline, params: `\"${lead?.leadName}\", \"${websiteDoctors[url]}\"` };
+        }
+    }
+}
+
 // @route   GET api/leads/test
 // @desc    Tests leads route
 // @access  Public
@@ -128,8 +151,9 @@ router.post(
                 await sendSms(pno, body);
 
                 try {
-                    const params = leadBody?.leadName
-                    const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", whatsappTemplatesRepo.lead_enquiry_online, params);
+                    // const params = leadBody?.leadName;
+                    const {template, params} = getTemplateByLeadUrl(leadBody);
+                    const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", template, params, null);
 
                     console.log("Appointment whatapp msg sent... ", resp);
                 } catch (e) {
