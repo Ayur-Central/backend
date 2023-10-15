@@ -18,19 +18,19 @@ const { createMeeting } = require('../../utils/helpers');
 const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
 
 const websiteDoctors = {
-    'https://ayurcentral-online.web.app/' : 'Online',
-    'https://dranjalimishra.ayurcentralonline.com/': 'Dr. Anjali Mishra',
-    'https://dranjalisen.ayurcentralonline.com/': 'Dr. Anjali Sen',
-    'https://drprashanth.ayurcentralonline.com/': 'Dr. Prashanth',
-    'https://drhibaismail.ayurcentralonline.com/': 'Dr. Hiba Ismail',
-    'https://drnaganikitha.ayurcentralonline.com/': 'Dr. Naga Nikitha',
-    'https://drmanojkumarsamantray.ayurcentralonline.com/': 'Dr. Manoj Kumar S',
-    'https://drshilpapattar.ayurcentralonline.com/': 'Dr. Shilpa Pattar',
+    'ayurcentral-online.web.app' : 'Online',
+    'dranjalimishra.ayurcentralonline.com': 'Dr. Anjali Mishra',
+    'dranjalisen.ayurcentralonline.com': 'Dr. Anjali Sen',
+    'drprashanth.ayurcentralonline.com': 'Dr. Prashanth',
+    'drhibaismail.ayurcentralonline.com': 'Dr. Hiba Ismail',
+    'drnaganikitha.ayurcentralonline.com': 'Dr. Naga Nikitha',
+    'drmanojkumarsamantray.ayurcentralonline.com': 'Dr. Manoj Kumar S',
+    'drshilpapattar.ayurcentralonline.com': 'Dr. Shilpa Pattar',
 }
 
 const getTemplateByLeadUrl = (lead) => {
     if (lead.leadEnquiryTag && lead.leadEnquiryTag.url) {
-        let url = Object.keys(websiteDoctors).find(e => e.includes(lead.leadEnquiryTag.url.replaceAll('/index.html', '')));
+        let url = Object.keys(websiteDoctors).find(e => e.includes(new URL(lead.leadEnquiryTag.url).host));
         console.log(url, websiteDoctors[url])
         if (websiteDoctors[url] === 'Online') {
             return { template: whatsappTemplatesRepo.lead_enquiry_online, params: lead?.leadName };

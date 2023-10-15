@@ -281,7 +281,8 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
             
-            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appObj, doctor, patient, clinic);
+            console.log(appointment)
+            const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
 
             try {
                 let info = await EmailService.sendMail({
@@ -1223,7 +1224,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
         // op.params = `"${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'"`;
         op.params = `\"${ patient?.patientName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }\"`;
-        op.link = `'${appointmentBody?.videoConsultationId}'`
+        op.link = appointmentBody?.videoConsultationId
     }
         
 
