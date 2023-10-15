@@ -1185,7 +1185,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`
         op.whatsAppTemplate = whatsappTemplatesRepo.direct_walkin;
-        op.params = `\"${patient?.patientName}\",\"${doctor?.doctorName}\"`;
+        op.params = `\"${patient?.patientName}\",\"${doctor?.doctorName}\",\"${moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')}\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" +appointmentBody?.scheduledAppointmentTime).format('hh:mm a')}\"`;
     }
 
     if (appointmentBody.appointmentType === 'Online' && appointmentBody.appointmentStatus === 'Scheduled' && appointmentBody.paymentStatus === 'Pending') {
