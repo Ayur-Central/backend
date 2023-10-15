@@ -1188,7 +1188,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
 
         To confirm your online appointment, we request you to make the payment through the provided link.
     
-        Payment Link: https://rzp.io/i/QBrFF4nQr
+        Payment Link: ${appointmentBody?.paymentLink}
         
         Upon payment confirmation, the video call details will be sent to you, allowing you to connect with your ${ doctor?.doctorName ?? "" } on ${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') ?? "" } at ${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') ?? "" }
         
@@ -1197,7 +1197,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.appointment_payment;
         // op.params = `"${ patient?.patientName },${ doctor?.doctorName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') },'https://rzp.io/i/QBrFF4nQr'"`;
-        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\"`;
+        op.params = `\"${ patient?.patientName }\",\"${ doctor?.doctorName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"${appointmentBody?.paymentLink}\"`;
         op.link = appointmentBody?.paymentLink;
     }
 
@@ -1217,7 +1217,7 @@ function getEmailSubjectBody(appointmentBody, doctor , patient, clinic) {
         Thank you for choosing AyurCentral for your healthcare needs. We're here to support you every step of the way.`;
         op.whatsAppTemplate = whatsappTemplatesRepo.send_vc_after_payment;
         // op.params = `"${ patient?.patientName },${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy')},${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a')},'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'"`;
-        op.params = `\"${ patient?.patientName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\"`;
+        op.params = `\"${ patient?.patientName }\",\"${ moment(appointmentBody?.scheduledAppointmentDate).format('D-M-yyyy') }\",\"${ moment(appointmentBody?.scheduledAppointmentDate + "T" + appointmentBody?.scheduledAppointmentTime).format('hh:mm a') }\",\"https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }\"`;
         op.link = `'https://consultations.web.app/${ appointmentBody?.videoConsultationId ?? "-" }'`
     }
         
