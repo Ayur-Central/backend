@@ -57,6 +57,9 @@ const AppointmentsSchema = new mongoose.Schema({
     rxGrossMargin: {
         type: String
     },
+    rxRemarks: {
+        type: String
+    },
     appointmentChannel: {
         type: String
     },
