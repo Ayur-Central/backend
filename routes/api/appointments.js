@@ -284,6 +284,14 @@ router.post(
             console.log(appointment)
             const { subject, body, whatsAppTemplate, params, link } = getEmailSubjectBody(appointment, doctor, patient, clinic);
 
+            // When there's no email body to be sent, dont send
+            // TODO: In future handle this properly in getEmailSubjectBody() method;
+
+            if (!body) {
+                res.json({ msg: 'Appointment created successfully!', appointment: appointment });
+                return;
+            }
+
             try {
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
