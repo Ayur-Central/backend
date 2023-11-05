@@ -1343,4 +1343,25 @@ router.get('/generatePaymentLink', async (req, res) => {
     }
 })
 
+router.get('/report', async (req, res) => {
+    try {
+        let appointments = await Appointment.find({ scheduledAppointmentDate: "2023-10-20" });
+        let patients = await Patients.find();
+
+        // appointments.map((e) => {
+        //     return { name: e.patientName, date: new Date(e.creationDate).toLocaleDateString() }
+        // })
+
+        patients.map((e) => {
+            return { name: e.patientName, date: new Date(e.creationDate).toLocaleDateString() }
+        })
+        
+        res.json(patients)
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error : ' + err.message);
+    }
+})
+
 module.exports = router;
