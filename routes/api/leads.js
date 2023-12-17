@@ -126,7 +126,7 @@ router.post(
 
                                         While you await confirmation, why not explore our diverse range of authentic Ayurvedic products? Visit our e-commerce store at www.ayurcentralonline.com, where you'll find over 10,000+ products carefully curated for your well-being.
 
-                                        If you require any assistance, feel free to get in touch with us at +91 8037156655 
+                                        If you require any assistance, feel free to get in touch with us at <a href="tel:+918049670477">+91 8049670477</a>
 
                                         Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
                                     </p>

@@ -1024,7 +1024,7 @@ router.post(
                                         
                                         Feedback Link: https://klr.bz/BAi9f/{kadvanced}
                                         
-                                        If you require help with your order or have any queries about your prescription, please contact our support team at +91 8037156655 for immediate assistance.
+                                        If you require help with your order or have any queries about your prescription, please contact our support team at <a href="tel:+918049670477">+91 8049670477</a> for immediate assistance.
                                         
                                         Thank you once again for choosing AyurCentral. We look forward to hearing from you and hope to serve you again in the future.
                                     </p>
