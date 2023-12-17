@@ -98,7 +98,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ leadBody?.leadName }, ${ leadBody?.leadEmail }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: 'Appointment Request Received - AyurCentral', // Subject line
                     html: ` <!DOCTYPE html>

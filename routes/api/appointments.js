@@ -103,7 +103,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ appointmentBody?.name }, ${ appointmentBody?.email }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: 'Appointment Request Received - AyurCentral', // Subject line
                     html: ` <!DOCTYPE html>
@@ -296,7 +296,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ patient?.patientName }, ${ patient?.patientEmail}`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: subject, // Subject line
                     html: ` <!DOCTYPE html>
@@ -395,7 +395,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ appointment?.name }, ${ appointment?.email }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: 'Appointment Request - Confirmed', // Subject line
                     text: `There is a new appointment scheduled for ${appointment?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
@@ -522,7 +522,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ appointment?.name }, ${ appointment?.email }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: 'Appointment Request - Confirmed', // Subject line
                     text: `There is a new appointment scheduled for ${appointment?.name} on ${moment(appointment?.appointmentDate).format('DD MMM YYYY, ddd')}`, // plain text body
@@ -648,7 +648,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ appointment?.name }, ${ appointment?.email }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     attachments: [{
                         filename: `Rx From Dr. Pampa Sreeshankar's Clinic.pdf`,
@@ -985,7 +985,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ foundPatient?.patientName }, ${ foundPatient?.patientEmail }`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     attachments: [{
                         filename: `Prescription-${foundPatient?.patientName}`,
@@ -1104,7 +1104,7 @@ router.post(
                 let info = await EmailService.sendMail({
                     from: `"${organisation}" <${email}>`, // sender address
                     to: `${ appointment?.patientName }, ${ appointment?.patientEmail}`, // list of receivers
-                    cc: `${email}`,
+                    // cc: `${email}`,
                     bcc: `${ bccemail }`,
                     subject: subject, // Subject line
                     html: ` <!DOCTYPE html>
