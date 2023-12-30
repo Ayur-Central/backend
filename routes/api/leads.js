@@ -13,12 +13,13 @@ const email = config.get('email');
 const bccemail = config.get('bccemail');
 const organisation = config.get('organisation');
 const Lead = require('../../models/Leads');
+const PromotionLead = require('../../models/PromotionLeads');
 const checkObjectId = require('../../middleware/checkObjectId');
 const { createMeeting } = require('../../utils/helpers');
 const { sendSms, sendWhatsAppMsg, whatsappTemplatesRepo } = require('../../utils/smsService');
 
 const websiteDoctors = {
-    'ayurcentral-online.web.app' : 'Online',
+    // 'ayurcentral-online.web.app' : 'Online',
     'dranjalimishra.ayurcentralonline.com': 'Dr. Anjali Mishra',
     'dranjalisen.ayurcentralonline.com': 'Dr. Anjali Sen',
     'drprashanth.ayurcentralonline.com': 'Dr. Prashanth',
@@ -32,7 +33,7 @@ const getTemplateByLeadUrl = (lead) => {
     if (lead.leadEnquiryTag && lead.leadEnquiryTag.url) {
         let url = Object.keys(websiteDoctors).find(e => e.includes(new URL(lead.leadEnquiryTag.url).host));
         console.log(url, websiteDoctors[url])
-        if (websiteDoctors[url] === 'Online') {
+        if (!websiteDoctors[url]) {
             return { template: whatsappTemplatesRepo.lead_enquiry_online, params: lead?.leadName };
         } else {
             return { template: whatsappTemplatesRepo.lead_enquiry_offline, params: `\"${lead?.leadName}\",\"${websiteDoctors[url]}\"` };
@@ -138,31 +139,142 @@ router.post(
                             `, // html body
                 });
                 
-                console.log("Lead email sent... ", info.messageId);
-                let pno = leadBody?.leadPhoneNo?.replace('+91', "");
-                let body = `
-                    Hi ${leadBody?.leadName},
-
-                    We received your lead request.
-                
-                    Regards,
-                    Team Ayurcentral
-                `
-                await sendSms(pno, body);
-
-                try {
-                    // const params = leadBody?.leadName;
-                    const {template, params} = getTemplateByLeadUrl(leadBody);
-                    const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", template, params, null);
-
-                    console.log("Appointment whatapp msg sent... ", resp);
-                } catch (e) {
-                    console.log("Error sending appointment whatsapp msg : ", e);
-                }
-                
+                console.log("Lead email sent... ", info.messageId);            
 
             } catch (error) {
                 console.log("Error sending lead email : ", error.message);
+            }
+
+            let pno = leadBody?.leadPhoneNo?.replace('+91', "");
+            let body = `
+                Hi ${leadBody?.leadName},
+
+                We received your lead request. Will will get in touch with you shortly.
+            
+                Regards,
+                Team Ayurcentral
+            `
+            await sendSms(pno, body);
+
+            try {
+                // const params = leadBody?.leadName;
+                const {template, params} = getTemplateByLeadUrl(leadBody);
+                const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", template, params, null);
+
+                console.log("Lead whatapp msg sent... ", resp);
+            } catch (e) {
+                console.log("Error sending lead whatsapp msg : ", e);
+            }
+                
+            res.json({ msg: 'Lead created successfully!', appointment: lead });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error : ' + err.message);
+        }
+    }
+);
+
+
+// @route    POST api/leads/promotions/create
+// @desc     Create promotions leads
+// @access   Public
+router.post(
+    '/promotions/create',
+    check('leadName', 'Name is required').notEmpty(),
+    check('leadPhoneNo', 'Phone no. is required').notEmpty(),
+    // check('appointmentDate', 'appointmentDate is required').notEmpty(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const leadBody = req.body;
+        const leadId = generateId();
+
+        // TODO:// Future
+        // Check if there is duplicate leads using phone and email
+        try {
+
+            let lead = new PromotionLead({
+                ...leadBody,
+                leadId: leadId
+            });
+
+            await lead.save();
+
+            // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
+
+            // try {
+            //     let info = await EmailService.sendMail({
+            //         from: `"${organisation}" <${email}>`, // sender address
+            //         to: `${ leadBody?.leadName }, ${ leadBody?.leadEmail }`, // list of receivers
+            //         // cc: `${email}`,
+            //         bcc: `${ bccemail }`,
+            //         subject: 'Appointment Request Received - AyurCentral', // Subject line
+            //         html: ` <!DOCTYPE html>
+            //                 <html>
+            //                     <head>
+            //                         <style>
+            //                             table {
+            //                                 font-family: arial, sans-serif;
+            //                                 border-collapse: collapse;
+            //                             }
+            //                             td, th {
+            //                                 border: 1px solid #dddddd;
+            //                                 text-align: left;
+            //                                 padding: 8px;
+            //                             }
+            //                         </style>
+            //                     </head>
+            //                     <body>
+            //                         <p style="white-space: pre-line;">
+            //                             Dear ${leadBody?.leadName}, 
+
+            //                             Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies.
+
+            //                             We're delighted to inform you that we've received your appointment request. Our dedicated team is already working on confirming your appointment, and you can expect to hear from us shortly.
+
+            //                             While you await confirmation, why not explore our diverse range of authentic Ayurvedic products? Visit our e-commerce store at www.ayurcentralonline.com, where you'll find over 10,000+ products carefully curated for your well-being.
+
+            //                             If you require any assistance, feel free to get in touch with us at <a href="tel:+918049670477">+91 8049670477</a>
+
+            //                             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
+            //                         </p>
+            //                         <p style="white-space: pre-line;">
+            //                             - Team AyurCentral
+            //                         </p>
+            //                     </body>
+            //                 </html>
+            //                 `, // html body
+            //     });
+                
+            //     console.log("Lead email sent... ", info.messageId);            
+
+            // } catch (error) {
+            //     console.log("Error sending lead email : ", error.message);
+            // }
+
+            let pno = leadBody?.leadPhoneNo?.replace('+91', "");
+            let body = `
+                Hi ${leadBody?.leadName},
+
+                We received your lead request. Will will get in touch with you shortly.
+            
+                Regards,
+                Team Ayurcentral
+            `
+            await sendSms(pno, body);
+
+            try {
+                // const params = leadBody?.leadName;
+                const {template, params} = getTemplateByLeadUrl(leadBody);
+                const resp = await sendWhatsAppMsg(leadBody?.leadPhoneNo, "", template, params, null);
+
+                console.log("Lead whatapp msg sent... ", resp);
+            } catch (e) {
+                console.log("Error sending lead whatsapp msg : ", e);
             }
                 
             res.json({ msg: 'Lead created successfully!', appointment: lead });
