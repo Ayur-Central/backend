@@ -237,6 +237,7 @@ router.post(
 
                                         Name : ${leadBody?.leadName},
                                         Phone No : <a href="tel:${leadBody?.leadPhoneNo }">${ leadBody?.leadPhoneNo}</a>
+                                        Promotion Type : ${leadBody?.promotionType}
                                         
                                         Regards,
                                         Ayurcentral.
