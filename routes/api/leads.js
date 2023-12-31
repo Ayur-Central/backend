@@ -206,55 +206,54 @@ router.post(
 
             // res.json({ msg: 'Appointment created successfully!', appointment: appointment });
 
-            // try {
-            //     let info = await EmailService.sendMail({
-            //         from: `"${organisation}" <${email}>`, // sender address
-            //         to: `${ leadBody?.leadName }, ${ leadBody?.leadEmail }`, // list of receivers
-            //         // cc: `${email}`,
-            //         bcc: `${ bccemail }`,
-            //         subject: 'Appointment Request Received - AyurCentral', // Subject line
-            //         html: ` <!DOCTYPE html>
-            //                 <html>
-            //                     <head>
-            //                         <style>
-            //                             table {
-            //                                 font-family: arial, sans-serif;
-            //                                 border-collapse: collapse;
-            //                             }
-            //                             td, th {
-            //                                 border: 1px solid #dddddd;
-            //                                 text-align: left;
-            //                                 padding: 8px;
-            //                             }
-            //                         </style>
-            //                     </head>
-            //                     <body>
-            //                         <p style="white-space: pre-line;">
-            //                             Dear ${leadBody?.leadName}, 
+            try {
+                let info = await EmailService.sendMail({
+                    from: `"${organisation}" <${email}>`, // sender address
+                    // to: `${ leadBody?.leadName }, ${ leadBody?.leadEmail }`, // list of receivers
+                    // cc: `${email}`,
+                    to: 'chandan@ayurcentral.com',
+                    bcc: `${ bccemail }`,
+                    subject: 'Callback Request Received', // Subject line
+                    html: ` <!DOCTYPE html>
+                            <html>
+                                <head>
+                                    <style>
+                                        table {
+                                            font-family: arial, sans-serif;
+                                            border-collapse: collapse;
+                                        }
+                                        td, th {
+                                            border: 1px solid #dddddd;
+                                            text-align: left;
+                                            padding: 8px;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <p style="white-space: pre-line;">
+                                        Dear Chandan,
 
-            //                             Greetings from AyurCentral - India's largest chain of Ayurvedic Clinics & Pharmacies.
+                                        A callback request has been received.
 
-            //                             We're delighted to inform you that we've received your appointment request. Our dedicated team is already working on confirming your appointment, and you can expect to hear from us shortly.
-
-            //                             While you await confirmation, why not explore our diverse range of authentic Ayurvedic products? Visit our e-commerce store at www.ayurcentralonline.com, where you'll find over 10,000+ products carefully curated for your well-being.
-
-            //                             If you require any assistance, feel free to get in touch with us at <a href="tel:+918049670477">+91 8049670477</a>
-
-            //                             Thank you for choosing AyurCentral. We look forward to assisting you on your Ayurvedic journey.
-            //                         </p>
-            //                         <p style="white-space: pre-line;">
-            //                             - Team AyurCentral
-            //                         </p>
-            //                     </body>
-            //                 </html>
-            //                 `, // html body
-            //     });
+                                        Name : ${leadBody?.leadName},
+                                        Phone No : <a href="tel:${leadBody?.leadPhoneNo }">${ leadBody?.leadPhoneNo}</a>
+                                        
+                                        Regards,
+                                        Ayurcentral.
+                                    </p>
+                                    <p style="white-space: pre-line;">
+                                        - Team AyurCentral
+                                    </p>
+                                </body>
+                            </html>
+                            `, // html body
+                });
                 
-            //     console.log("Lead email sent... ", info.messageId);            
+                console.log("Lead email sent... ", info.messageId);            
 
-            // } catch (error) {
-            //     console.log("Error sending lead email : ", error.message);
-            // }
+            } catch (error) {
+                console.log("Error sending lead email : ", error.message);
+            }
 
             let pno = leadBody?.leadPhoneNo?.replace('+91', "");
             let body = `
